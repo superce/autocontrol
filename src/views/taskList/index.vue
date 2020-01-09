@@ -138,19 +138,23 @@ export default {
             this.currentPage = 1
             this.getTaskList(this.currentPage,this.taskTitle)
         },
-        searchTag(){
-
+        // 通过标签队列
+        searchTag(val){
+            this.currentPage = 1
+            this.getTaskList(this.currentPage,this.taskTitle,val)
         },
         nextpage(i){ // 翻页
             this.getTaskList(i,this.taskTitle)
         },
-        getTaskList(i,id){ //获取任务列表
+        //获取任务列表
+        getTaskList(i,id,tag){ 
             this.loading = true
             apiGetTaskList({
                 page:i,
                 pagesize:15,
                 queueid:id,
-                state:this.searchState
+                state:this.searchState,
+                tag:tag
             }).then(res =>{
                 this.taskList = res.data
                 this.total = res.pagecount

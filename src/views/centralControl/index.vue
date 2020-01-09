@@ -95,7 +95,7 @@
               <el-form-item v-if="isSuper===1" label="密码" class="input-item" prop="password">
                 <el-input v-model="site4g.password"></el-input>
               </el-form-item>
-              <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item" prop="password">
+              <!-- <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item" prop="password">
                 <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="运营商">
                   <el-option value="0" label="台湾中华电信"></el-option>
                   <el-option value="1" label="香港移动大陆卡"></el-option>
@@ -104,7 +104,7 @@
                   <el-option value="4" label="香港3hk"></el-option>
                   <el-option value="5" label="台湾远传"></el-option>
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="模式" prop="mode">
                 <el-select v-model="site4g.mode" @change="changeModle" placeholder="模式">
                   <el-option value="0" label="间隔时间"></el-option>
