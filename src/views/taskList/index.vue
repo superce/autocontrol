@@ -25,6 +25,19 @@
                     <el-option label="未执行" value="0"></el-option>
                 </el-select>
             </div>
+            <div>
+                <span>队列标签:</span>
+                <el-select v-model="taskTagId" :disabled='tagList.length===0'  @change='searchTag' filterable placeholder="请选择">
+                    <el-option label="全部" value=""></el-option>
+                    <el-option
+                        v-for="(item,index) in tagList"
+                        :key="index+'tag'"
+                        :label="item.tag_name"
+                        :value="item.id"
+                        >
+                    </el-option>
+                </el-select>
+            </div>
             <!-- <el-button type="primary" @click="search">搜索</el-button> -->
         </div>
         <div class="control-box">
@@ -91,6 +104,7 @@ export default {
     data(){
         return {
             taskList:[],
+            taskTagId:'', // 搜索tagId
             queueList:[],
             formTask:{
                 pageurl:'',
@@ -123,6 +137,9 @@ export default {
         search(){
             this.currentPage = 1
             this.getTaskList(this.currentPage,this.taskTitle)
+        },
+        searchTag(){
+
         },
         nextpage(i){ // 翻页
             this.getTaskList(i,this.taskTitle)
@@ -173,12 +190,15 @@ export default {
 
             })
         },
+        // 获取tag列表
         getTagList(queueid){
             apiGetTagList({
                 task_queue_id:queueid
             }).then(res=>{
                 if(res.state){
                     this.tagList = res.taglist
+                }else{
+                    this.tagList=[]
                 }
             }).catch(err =>{
                 console.log(err)

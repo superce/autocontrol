@@ -76,9 +76,10 @@
             </el-form-item>
           </el-form>
           <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')">
+          <!-- <div v-show="isSelectIp=='2'"> -->
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
-              <el-form-item label="连接类型" prop="con_type">
+              <el-form-item v-if="isSuper===1" label="连接类型" prop="con_type">
                 <el-select v-model="site4g.con_type" placeholder="选择连接类型">
                   <el-option value="0" label="Api"></el-option>
                   <el-option value="1" label="ApiSsl"></el-option>
@@ -88,11 +89,21 @@
                   <el-option value="5" label="Telnet"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="用户名" class="input-item" prop="username">
+              <el-form-item v-if="isSuper===1" label="用户名" class="input-item" prop="username">
                 <el-input v-model="site4g.username"></el-input>
               </el-form-item>
-              <el-form-item label="密码" class="input-item" prop="password">
+              <el-form-item v-if="isSuper===1" label="密码" class="input-item" prop="password">
                 <el-input v-model="site4g.password"></el-input>
+              </el-form-item>
+              <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item" prop="password">
+                <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="运营商">
+                  <el-option value="0" label="台湾中华电信"></el-option>
+                  <el-option value="1" label="香港移动大陆卡"></el-option>
+                  <el-option value="2" label="香港csl"></el-option>
+                  <el-option value="3" label="香港数码通（smartone）"></el-option>
+                  <el-option value="4" label="香港3hk"></el-option>
+                  <el-option value="5" label="台湾远传"></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="模式" prop="mode">
                 <el-select v-model="site4g.mode" @change="changeModle" placeholder="模式">
@@ -216,7 +227,8 @@ export default {
         username: "",
         password: "",
         interval: "",
-        mode: ""
+        mode: "",
+        //iptype:''
       },
       editModle: "", // 选择模式
       con_typeId: "",
@@ -350,6 +362,10 @@ export default {
           return (this.editModle = "间隔次数");
       }
     },
+    // 监控选择的ip
+    changeIptype(val){
+      console.log(val)
+    },
     // 选择ip模式
     changeIp(val){
       this.isShow4G=false
@@ -373,6 +389,9 @@ export default {
             if(item.g4index===1){  //g4index 0:不换ip 1：默认配置  2：自选配置
               g4Index = true
             }
+            // if(item.type === 1){ //type 1:不换ip, 2换ip
+            //   g4Index = true
+            // }
           }
           
         })
@@ -380,6 +399,7 @@ export default {
       if (result) {
         // 不换ip
         this.isSelectIp=['1']   
+        // this.isSelect='0'
         if(this.editIds.length === 1){
           this.list.forEach(items =>{
             items.itemList.forEach(item =>{
@@ -394,8 +414,10 @@ export default {
           if(copySite4g.length>0&&copySite4g[0]){
             if(g4Index){
               this.isSelectIp=['2','1']
+              // this.isSelectIp='0'
             }else{
               this.isSelectIp=['2','2']
+              // this.isSelectIp='1'
               let copySite4g_1 = JSON.parse(copySite4g[0])
               copySite4g_1.mode = copySite4g_1.mode.toString()
               console.log(copySite4g_1)
@@ -510,6 +532,7 @@ export default {
         }
       }
     },
+    // 保存api
     saveEditApi(p){
       this.editLoading=true
       this.isSelectIp=Number(this.isSelectIp[0])
@@ -770,6 +793,7 @@ export default {
 };
 </script>
 <style scoped>
+.fiexd-nav{min-width: 1850px;}
 .central-control .control-box{margin-top: 170px}
 .central-control .control-box .toggle {
   margin-right: 10px;
