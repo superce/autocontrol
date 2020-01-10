@@ -61,22 +61,22 @@
               <el-input v-model="wCount"></el-input>
             </el-form-item>
             <el-form-item label="4G网络设置">
-              <!-- <el-select v-model="isSelectIp" @change="changeIp" placeholder="请选择">
+              <el-select v-model="isSelectIp" @change="changeIp" placeholder="请选择">
                 <el-option label="不换IP" value="1"></el-option>
                 <el-option label="换IP" value="2"></el-option>
-              </el-select> -->
-              <el-cascader
+              </el-select>
+              <!-- <el-cascader
                 v-model="isSelectIp"
                 :options="options"
                 :props="{ expandTrigger: 'hover' }"
                 :show-all-levels="false"
                 @change="changeIp">
-              </el-cascader>
+              </el-cascader> -->
               <p class="is-show-4g" v-show="isShow4G">4G网络配置不一致，保存后将改为统一配置</p>
             </el-form-item>
           </el-form>
-          <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')">
-          <!-- <div v-show="isSelectIp=='2'"> -->
+          <!-- <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')"> -->
+          <div v-show="isSelectIp=='2'">
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
               <el-form-item v-if="isSuper===1" label="连接类型" prop="con_type">
@@ -95,8 +95,8 @@
               <el-form-item v-if="isSuper===1" label="密码" class="input-item" prop="password">
                 <el-input v-model="site4g.password"></el-input>
               </el-form-item>
-              <!-- <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item" prop="password">
-                <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="运营商">
+              <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item">
+                <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="请选择运营商">
                   <el-option value="0" label="台湾中华电信"></el-option>
                   <el-option value="1" label="香港移动大陆卡"></el-option>
                   <el-option value="2" label="香港csl"></el-option>
@@ -104,15 +104,16 @@
                   <el-option value="4" label="香港3hk"></el-option>
                   <el-option value="5" label="台湾远传"></el-option>
                 </el-select>
-              </el-form-item> -->
+              </el-form-item>
               <el-form-item label="模式" prop="mode">
-                <el-select v-model="site4g.mode" @change="changeModle" placeholder="模式">
+                <el-select v-model="site4g.mode" placeholder="模式" @change="changeModle">
+                  <el-option value="-1" label="停用"></el-option>
                   <el-option value="0" label="间隔时间"></el-option>
                   <el-option value="1" label="间隔次数"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item :label="editModle || '间隔'" class="input-item" prop="interval">
-                <el-input v-model="site4g.interval"></el-input>
+                <el-input v-model="site4g.interval" :disabled="editModle==='停用'"></el-input>
               </el-form-item>
             </el-form>
           </div>
@@ -228,7 +229,7 @@ export default {
         password: "",
         interval: "",
         mode: "",
-        //iptype:''
+        iptype:''
       },
       editModle: "", // 选择模式
       con_typeId: "",
@@ -247,7 +248,7 @@ export default {
       editGroup:'', // 判断是分组还是编辑
       groupName:'', //分组名称
       isEditName:'',
-      isSelectIp:['1'], //是否换ip
+      isSelectIp:'1', //是否换ip
       isSelectStatus:'', //启用停用状态
       wCount:'', // 窗口数量
       isShow4G:false, // 是否多选中控4g配置
@@ -356,6 +357,8 @@ export default {
     changeModle(val) {
       // 监控选择的模式
       switch (val) {
+        case "-1":
+          return this.editModle = '停用'
         case "0":
           return (this.editModle = "间隔时间");
         case "1":
@@ -386,20 +389,29 @@ export default {
             result = true;
             this.editIds.push(item.id);
             copySite4g.push(item.g4)
-            if(item.g4index===1){  //g4index 0:不换ip 1：默认配置  2：自选配置
-              g4Index = true
-            }
-            // if(item.type === 1){ //type 1:不换ip, 2换ip
+            // if(item.g4index===1){  //g4index 0:不换ip 1：默认配置  2：自选配置
             //   g4Index = true
             // }
+            if(item.g4){
+              let mode = JSON.parse(item.g4)
+              if(mode.mode == -1){ //mode -1:不换ip
+                console.log('mode==-1')
+                g4Index = true
+              }
+            }else{
+              console.log('mode!==-1')
+              g4Index = true
+            }
           }
           
         })
       });
+      console.log(result)
       if (result) {
         // 不换ip
-        this.isSelectIp=['1']   
-        // this.isSelect='0'
+        // this.isSelectIp=['1']   
+        this.isSelectIp='1'
+        // 选择一个中控的时候
         if(this.editIds.length === 1){
           this.list.forEach(items =>{
             items.itemList.forEach(item =>{
@@ -412,15 +424,8 @@ export default {
           })
           // 换ip
           if(copySite4g.length>0&&copySite4g[0]){
-            if(g4Index){
-              this.isSelectIp=['2','1']
-              // this.isSelectIp='0'
-            }else{
-              this.isSelectIp=['2','2']
-              // this.isSelectIp='1'
-              let copySite4g_1 = JSON.parse(copySite4g[0])
+            let copySite4g_1 = JSON.parse(copySite4g[0])
               copySite4g_1.mode = copySite4g_1.mode.toString()
-              console.log(copySite4g_1)
               this.site4g = {
                 con_type: copySite4g_1.con_type,
                 username: copySite4g_1.username,
@@ -428,29 +433,35 @@ export default {
                 interval: copySite4g_1.interval,
                 mode: copySite4g_1.mode
               }
+            if(g4Index){
+              console.log('不换IP',g4Index) //g4Index 为true  不换ip
+              this.isSelectIp='1'
+            }else{
+              console.log('换IP')
+              this.isSelectIp='2'
             }
           }
         }else{
-          // // 多选中控的时候,取数据第一条不为空的配置
-          // for(var i = 0;i<copySite4g.length;i++){
-          //   if(copySite4g[i]){
-          //     let a = JSON.parse(copySite4g[i])
-          //     a.mode = a.mode.toString()
-          //     if(a.username){
-          //       this.isShow4G=true
-          //       this.isSelectIp=['2','2']
-          //       this.site4g ={
-          //         con_type: a.con_type,
-          //         username: a.username,
-          //         password: a.password,
-          //         interval: a.interval,
-          //         mode: a.mode
-          //       }
-          //       break;
-          //     }
-          //   }
-          // }
-          this.isSelectIp = ['0']
+          // 多选中控的时候,取数据第一条不为空的配置
+          for(var i = 0;i<copySite4g.length;i++){
+            if(copySite4g[i]){
+              let a = JSON.parse(copySite4g[i])
+              a.mode = a.mode.toString()
+              if(a.username){
+                this.isShow4G=true
+                this.isSelectIp='2'
+                this.site4g ={
+                  con_type: a.con_type,
+                  username: a.username,
+                  password: a.password,
+                  interval: a.interval,
+                  mode: a.mode
+                }
+                break;
+              }
+            }
+          }
+          // this.isSelectIp = '1'
         }
         this.editContorl();
       } else {
@@ -508,28 +519,29 @@ export default {
         settingtype:0
       }
       console.log(this.isSelectIp)
-      if(this.isSelectIp[0]==1||this.isSelectIp[0]==0){ 
+      // 不换IP
+      let site4g = this.site4g;
+      let json4g = JSON.stringify(site4g);
+      params.json4g=json4g
+      if(this.isSelectIp==1){ 
         this.saveEditApi(params)
-      }else{
-        if(this.isSelectIp.length>1&&this.isSelectIp[1]==1){ //默认配置
-          params.settingtype = Number(this.isSelectIp[1])
-          console.log(params.settingtype)
-          this.saveEditApi(params)
-        }
-        if(this.isSelectIp.length>1&&this.isSelectIp[1]==2){ //自选配置
+      }else{ // 换IP
+        // if(this.isSelectIp.length>1&&this.isSelectIp[1]==1){ //默认配置
+        //   params.settingtype = Number(this.isSelectIp[1])
+        //   console.log(params.settingtype)
+        //   this.saveEditApi(params)
+        // }
+        // if(this.isSelectIp.length>1&&this.isSelectIp[1]==2){ //自选配置
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              let site4g = this.site4g;
-              let json4g = JSON.stringify(site4g);
-              params.json4g=json4g
-              params.settingtype = Number(this.isSelectIp[1])
+              // params.settingtype = Number(this.isSelectIp[1])
               this.saveEditApi(params)
             } else {
               console.log('error submit!!');
               return false;
             }
           });
-        }
+        // }
       }
     },
     // 保存api
@@ -544,7 +556,7 @@ export default {
         name:p.name,
         w_count:p.w_count,
         status:p.status,
-        settingtype:p.settingtype
+        // settingtype:p.settingtype
       }).then(res => {
         if(res.data.state === 'error'){
           this.$message.error(res.data.msg)
@@ -769,6 +781,17 @@ export default {
     },
     dialogTableVisible(val){
       if(!val) this.bigImg = ''
+    },
+    site4g(val){
+      // 监控选择的模式
+      switch (val.mode) {
+        case "-1":
+          return this.editModle = '停用'
+        case "0":
+          return (this.editModle = "间隔时间");
+        case "1":
+          return (this.editModle = "间隔次数");
+      }
     }
   },
   filters: {
