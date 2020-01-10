@@ -38,6 +38,9 @@
                     </el-option>
                 </el-select>
             </div>
+            <div>
+                <el-button type="primary" @click="renovate">刷新</el-button>
+            </div>
             <!-- <el-button type="primary" @click="search">搜索</el-button> -->
         </div>
         <div class="control-box">
@@ -134,6 +137,9 @@ export default {
         }
     },
     methods:{
+        renovate(){
+            this.getTaskList(this.currentPage,this.taskTitle)
+        },
         search(){
             this.currentPage = 1
             this.getTaskList(this.currentPage,this.taskTitle)
