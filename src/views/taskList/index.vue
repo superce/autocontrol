@@ -3,7 +3,7 @@
         <div class="search" :class="isScroll?'fiexd-nav':''">
             <div>
                 <span>队列标识:</span>
-                <el-select v-model="taskTitle" @change='search' filterable placeholder="请选择">
+                <el-select v-model="taskTitle" @change='search("")' filterable placeholder="请选择">
                     <el-option
                         v-for="(item,index) in queueList"
                         :key="index+'u'"
@@ -15,7 +15,7 @@
             </div>
             <div>
                 <span>状态:</span>
-                <el-select v-model="searchState" @change='search' placeholder="请选择">
+                <el-select v-model="searchState" @change='search("state")' placeholder="请选择">
                     <el-option label="全部" value=""></el-option>
                     <el-option label="已完成" value="3"></el-option>
                     <el-option label="执行中" value="2"></el-option>
@@ -138,10 +138,13 @@ export default {
     },
     methods:{
         renovate(){
-            this.getTaskList(this.currentPage,this.taskTitle)
+            this.getTaskList(this.currentPage,this.taskTitle,this.taskTagId)
         },
-        search(){
+        search(state){
             this.currentPage = 1
+            if(!state){
+                this.taskTagId = ''
+            }
             this.getTaskList(this.currentPage,this.taskTitle)
         },
         // 通过标签队列
