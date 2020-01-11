@@ -181,6 +181,8 @@ export default {
                             this.$message.success(res.data.msg)
                             this.create=false
                             this.getList()
+                        }else{
+                            this.$message.error(res.data.msg)
                         }
                     }).catch(err =>{
                         console.log(err)
