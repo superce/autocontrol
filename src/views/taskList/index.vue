@@ -153,7 +153,7 @@ export default {
             this.getTaskList(this.currentPage,this.taskTitle,val)
         },
         nextpage(i){ // 翻页
-            this.getTaskList(i,this.taskTitle)
+            this.getTaskList(i,this.taskTitle,this.taskTagId)
         },
         //获取任务列表
         getTaskList(i,id,tag){ 
