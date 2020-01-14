@@ -431,7 +431,8 @@ export default {
                 username: copySite4g_1.username,
                 password: copySite4g_1.password,
                 interval: copySite4g_1.interval,
-                mode: copySite4g_1.mode
+                mode: copySite4g_1.mode,
+                iptype:copySite4g_1.iptype
               }
             if(g4Index){
               console.log('不换IP',g4Index) //g4Index 为true  不换ip
