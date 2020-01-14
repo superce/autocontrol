@@ -548,7 +548,7 @@ export default {
     // 保存api
     saveEditApi(p){
       this.editLoading=true
-      this.isSelectIp=Number(this.isSelectIp[0])
+      //this.isSelectIp=Number(this.isSelectIp[0])
       apiEditZkUpdate({
         userid: this.userId,
         ids: this.editIds,
