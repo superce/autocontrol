@@ -42,7 +42,7 @@
                                     <el-button type="primary" size="mini" @click="editQueue(row)">修改</el-button>
                                     <el-button type="primary" size="mini" @click="toDisControl(row.id)">分配中控</el-button>
                                     <el-button type="primary" size="mini" @click="goTag(row.id)">标签</el-button>
-                                    <el-button type="primary" size="mini" @click="willTask(row.id)">积压任务<span class="span-id">({{row.id}})</span></el-button>
+                                    <el-button type="primary" size="mini" @click="willTask(row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -102,7 +102,7 @@
                             </el-form>
                         </template>
                     </el-table-column>
-                    <el-table-column :label="`积压任务: ${queueid}`" prop="name"></el-table-column>
+                    <el-table-column :label="`积压任务数量: ${TaskCount}`" prop="name"></el-table-column>
                 </el-table>
                 <el-button :type="WillTaskList.length===0?'info':'primary'" class="delete-will-do" :disabled="WillTaskList.length===0" @click="deleteWillDoTask">删除积压任务</el-button>
             </el-dialog>
@@ -152,7 +152,8 @@ export default {
             activeNames:[],
             pages:0, //页数
             queueid:0,
-            tagId:0
+            tagId:0,
+            TaskCount:0
         }
     },
     computed:{
@@ -385,6 +386,7 @@ export default {
                 tag:0
             }).then(res =>{
                 if(res.state){
+                    this.TaskCount = res.count
                     this.WillTaskList = res.data
                     this.isWillTask = true
                 }

@@ -118,7 +118,7 @@ export default {
             apiGetControlList({
                 userid: this.userId,
                 page_index: 1,
-                page_size: 100,
+                page_size: 999,
             }).then(res => {
                 let newData = []
                 if(_this.type === 'user'){ // 用户管理
