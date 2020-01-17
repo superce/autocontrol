@@ -241,7 +241,7 @@ export default {
                 taskid:row.taskID,
                 accountid:row.accountID
             }).then(res =>{
-                this.getTaskList(this.currentPage,this.taskTitle)
+                this.getTaskList(this.currentPage,this.taskTitle,row.tag)
                 this.$message.success('修改成功')
             }).catch(err =>{
                 console.log(err)
