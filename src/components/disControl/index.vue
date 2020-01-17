@@ -1,42 +1,54 @@
 <template>
     <el-dialog :visible.sync="dialogFormControl" title="分配中控">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="用户管理" name="1">
-                <el-table :data="controlList" style="width: 100%" height="550" ref='controlTable' stripe @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column type="expand">
-                        <template slot-scope="props">
-                            <el-form label-position="left" inline class="demo-table-expand"> 
-                                <el-form-item label="中控名称:">
-                                    <span>{{ props.row.name }}</span>
-                                </el-form-item>
-                                <el-form-item label="ip:">
-                                    <span>{{ props.row.ip }}</span>
-                                </el-form-item>
-                                <el-form-item label="队列标识:">
-                                    <span>{{ props.row.queue_title }}</span>
-                                </el-form-item>
-                                <el-form-item label="uid:">
-                                    <span>{{ props.row.uid }}</span>
-                                </el-form-item>
-                                <el-form-item label="使用人:">
-                                    <span>{{ props.row.username }}</span>
-                                </el-form-item>
-                                <el-form-item label="心跳时间:">
-                                    <span>{{dateFormat(props.row.lastcore)}}</span>
-                                </el-form-item>
-                            </el-form>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="中控名称" prop="name"></el-table-column>
-                    <el-table-column label="ip" prop="ip"></el-table-column>
-                </el-table>
-            </el-tab-pane>
-            <el-tab-pane label="配置管理" name="2">
-                123
-            </el-tab-pane>
-        </el-tabs>
-        
+        <!-- <el-table :data="controlList" style="width: 100%" height="550" ref='controlTable' stripe @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="expand">
+                <template slot-scope="props">
+                    <el-form label-position="left" inline class="demo-table-expand"> 
+                        <el-form-item label="中控名称:">
+                            <span>{{ props.row.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="ip:">
+                            <span>{{ props.row.ip }}</span>
+                        </el-form-item>
+                        <el-form-item label="队列标识:">
+                            <span>{{ props.row.queue_title }}</span>
+                        </el-form-item>
+                        <el-form-item label="uid:">
+                            <span>{{ props.row.uid }}</span>
+                        </el-form-item>
+                        <el-form-item label="使用人:">
+                            <span>{{ props.row.username }}</span>
+                        </el-form-item>
+                        <el-form-item label="心跳时间:">
+                            <span>{{dateFormat(props.row.lastcore)}}</span>
+                        </el-form-item>
+                    </el-form>
+                </template>
+            </el-table-column>
+            <el-table-column label="中控名称" prop="name"></el-table-column>
+            <el-table-column label="ip" prop="ip"></el-table-column>
+        </el-table> -->
+          <div style="text-align: center">
+            <el-transfer
+            style="text-align: left; display: inline-block"
+            v-model="value"
+            filterable
+            :left-default-checked="[2, 3]"
+            :right-default-checked="[1]"
+            :render-content="renderFunc"
+            :titles="['Source', 'Target']"
+            :button-texts="['取消分配', '分配中控']"
+            :format="{
+                noChecked: '${total}',
+                hasChecked: '${checked}/${total}'
+            }"
+            @change="handleChange"
+            :data="data">
+            <!-- <el-button class="transfer-footer" slot="left-footer" size="small">操作</el-button>
+            <el-button class="transfer-footer" slot="right-footer" size="small">操作</el-button> -->
+            </el-transfer>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormControl = false">取 消</el-button>
             <el-button type="primary" @click="confirmSaveControl">确 定</el-button>
@@ -50,6 +62,25 @@ export default {
     props:['rowId','type','taskId'],
     name:'disControl',
     data(){
+        // const generateData = _ => {
+        //     const data = [];
+        //     // for (let i = 1; i <= 15; i++) {
+        //     //     data.push({
+        //     //         key: i,
+        //     //         label: `备选项 ${ i }`,
+        //     //         disabled: i % 4 === 0
+        //     //     });
+        //     // }
+        //     console.log(this.controlList)
+        //     for(let i = 1;i<=this.controlList.length;i++){
+        //         console.log(this.controlList[i])
+        //         data.push({
+        //             key:i,
+        //             label:''
+        //         })
+        //     }
+        //     return data;
+        // };
         return {
             SelectionChange:[], // 选择的列表id
             unIds:[],
@@ -57,7 +88,12 @@ export default {
             dialogFormControl:false,
             controlList:[],
             index:0,
-            activeName:'1'
+            activeName:'1',
+            data: this.generateData(),
+            value: [1,3],
+            renderFunc(h, option) {
+                return <span>{ option.key } - { option.label }</span>;
+            }
         }
     },
     computed:{
@@ -66,6 +102,21 @@ export default {
         }
     },
     methods:{
+        generateData(){
+            console.log(this.controlList)
+            const data = [];
+            for (let i = 1; i <= this.controlList.length; i++) {
+                data.push({
+                    key: i,
+                    label: `备选项 ${ i }`
+                    //disabled: i % 4 === 0
+                });
+            }
+            return data
+        },
+        handleChange(value, direction, movedKeys) {
+            console.log(value, direction, movedKeys);
+        },
         // 选择多个中控
         handleSelectionChange(val){
             // console.log(val)
