@@ -42,7 +42,7 @@
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini" @click="editControl(row)">修改</el-button>
                         <el-button type="primary" size="mini" @click="disControl(row.id)">分配中控</el-button>
-                        <el-button type="primary" size="mini" @click="willTask(row.task_queue_id,row.id)">积压任务</el-button>
+                        <el-button type="primary" size="mini" @click="willTask(row.task_queue_id,row.id)">积压任务<span class="span-id">({{row.id}})</span></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -68,7 +68,7 @@
                             </el-form>
                         </template>
                     </el-table-column>
-                    <el-table-column label="积压任务" prop="name"></el-table-column>
+                    <el-table-column :label="'积压任务:' + tasktagId" prop="name"></el-table-column>
                 </el-table>
                 <el-button :type="WillTaskList.length===0?'info':'primary'" class="delete-will-do" :disabled="WillTaskList.length===0" @click="deleteWillDoTask">删除积压任务</el-button>
             </el-dialog>
@@ -311,4 +311,5 @@ export default {
 .tag-list{margin-top: 10px;}
 .pagination-page{text-align: center;margin-top: 20px;}
 .will-task .delete-will-do{margin-top: 10px;}
+.tag-list .span-id{color: #000}
 </style>
