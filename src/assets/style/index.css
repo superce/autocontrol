@@ -37,3 +37,9 @@ li{list-style: none;}
 ul.pages{display: flex;justify-content: center;margin-top: 10px}
 ul.pages li{width: 30px;height: 30px;margin: 0 5px;background: #409EFF;line-height: 30px;border-radius: 5px;color:#fff;text-align: center;cursor: pointer;}
 .el-card__body{padding: 10px !important;}
+.el-transfer-panel{width:100% !important}
+.el-transfer{display: flex !important;align-items: center;}
+.el-transfer__buttons{display: flex !important;flex-direction: column;}
+.el-transfer__buttons .el-button+.el-button{margin-left: 0;}
+.el-transfer-panel__body{height: 300px !important;}
+.el-transfer-panel__list.is-filterable{height: 254px !important;}

@@ -31,18 +31,15 @@
         </el-table> -->
           <div style="text-align: center">
             <el-transfer
-            style="text-align: left; display: inline-block"
+            style="text-align: left; display: inline-block;"
             v-model="value"
             filterable
-            :left-default-checked="[2, 3]"
-            :right-default-checked="[1]"
+            :left-default-checked="[]"
+            :right-default-checked="[]"
             :render-content="renderFunc"
-            :titles="['Source', 'Target']"
+            :titles="['未分配', '已分配']"
             :button-texts="['取消分配', '分配中控']"
-            :format="{
-                noChecked: '${total}',
-                hasChecked: '${checked}/${total}'
-            }"
+            @left-check-change='leftChange'
             @change="handleChange"
             :data="data">
             <!-- <el-button class="transfer-footer" slot="left-footer" size="small">操作</el-button>
@@ -88,11 +85,10 @@ export default {
             dialogFormControl:false,
             controlList:[],
             index:0,
-            activeName:'1',
-            data: this.generateData(),
-            value: [1,3],
+            data: [],//this.generateData(),
+            value: [],
             renderFunc(h, option) {
-                return <span>{ option.key } - { option.label }</span>;
+                return <span>{ `${option.label}--${option.ip}` }</span>;
             }
         }
     },
@@ -102,20 +98,41 @@ export default {
         }
     },
     methods:{
+        // 穿梭框数据
         generateData(){
-            console.log(this.controlList)
             const data = [];
             for (let i = 1; i <= this.controlList.length; i++) {
+                let ip = '***'
+                if(this.controlList[i-1].ip){
+                    ip = this.controlList[i-1].ip
+                }
                 data.push({
-                    key: i,
-                    label: `备选项 ${ i }`
-                    //disabled: i % 4 === 0
+                    ip:ip,
+                    key: this.controlList[i-1].id,
+                    label: this.controlList[i-1].name
                 });
             }
-            return data
+            this.data = data
+            //return data
         },
+        leftChange(sa,d){
+            console.log(sa,d)
+        },
+        // 左右分配按钮
         handleChange(value, direction, movedKeys) {
             console.log(value, direction, movedKeys);
+            let r = []
+            this.unIds = []
+            r = this.controlList.filter(f =>{
+                console.log(f.id)
+
+            })
+            if(direction === 'left'){
+
+            }
+            if(direction === 'right'){
+
+            }
         },
         // 选择多个中控
         handleSelectionChange(val){
@@ -180,57 +197,142 @@ export default {
                 page_index: 1,
                 page_size: 100,
             }).then(res => {
+                console.log(res)
+                // this.controlListData(_this.type)
                 let newData = []
-                if(_this.type === 'user'){ // 用户管理
-                    res.data.forEach(item => {
+                // let name = []
+                // if(_this.type === 'user'){ // 用户管理
+                res.data.forEach(item => {
+                    if(_this.type === 'user'){
                         if(item.userid === _this.rowId || !item.userid){
                             if(item.userid !==0){
-                                setTimeout(() =>{
-                                    this.$refs.controlTable.toggleRowSelection(item);
-                                },0)
+                                // setTimeout(() =>{
+                                //     //this.$refs.controlTable.toggleRowSelection(item);
+                                // },0)
+                                // name.push(item.name)
+                                this.value.push(item.id)
                             }
                             newData.push(item)
                             // if(item.status!='-1'){
                             // }
                         }
-                    });
-                }
-                if(_this.type === 'quene'){ //队列标识
-                    console.log(res.data)
-                    res.data.forEach(item =>{
+                    }
+                    if(_this.type === 'quene'){
+                        // console.log(res.data)
                         if(item.task_queue_id === _this.rowId||!item.task_queue_id){
                             if(item.task_queue_id !==0){
-                                setTimeout(() =>{
-                                    this.$refs.controlTable.toggleRowSelection(item);
-                                },0)
+                                // setTimeout(() =>{
+                                //     //this.$refs.controlTable.toggleRowSelection(item);
+                                // },0)
+                                // name.push(item.name)
+                                this.value.push(item.id)
                             }
                             //  if(item.status!='-1'){
                             //      }
                             newData.push(item)
                         }
-                    })
-                }
-                if(_this.type === 'queneTag'){
-                    res.data.forEach(item =>{
+                    }
+                    if(_this.type === 'queneTag'){
                         if(item.queue_tag_id === _this.rowId||!item.task_queue_id){
                             if(item.queue_tag_id !==0){
-                                setTimeout(() =>{
-                                    this.$refs.controlTable.toggleRowSelection(item);
-                                },0)
+                                // setTimeout(() =>{
+                                //     //this.$refs.controlTable.toggleRowSelection(item);
+                                // },0)
+                                // name.push(item.name)
+                                this.value.push(item.id)
                             }
                             // if(item.status!='-1'){
                             //     }
                             newData.push(item)
                         }
-                    })
-                }
+                    }
+                });
+                // }
+                // if(_this.type === 'quene'){ //队列标识
+                //     console.log(res.data)
+                //     res.data.forEach(item =>{
+                //         if(item.task_queue_id === _this.rowId||!item.task_queue_id){
+                //             if(item.task_queue_id !==0){
+                //                 setTimeout(() =>{
+                //                     this.$refs.controlTable.toggleRowSelection(item);
+                //                 },0)
+                //             }
+                //             //  if(item.status!='-1'){
+                //             //      }
+                //             newData.push(item)
+                //         }
+                //     })
+                // }
+                // if(_this.type === 'queneTag'){
+                //     res.data.forEach(item =>{
+                //         if(item.queue_tag_id === _this.rowId||!item.task_queue_id){
+                //             if(item.queue_tag_id !==0){
+                //                 setTimeout(() =>{
+                //                     this.$refs.controlTable.toggleRowSelection(item);
+                //                 },0)
+                //             }
+                //             // if(item.status!='-1'){
+                //             //     }
+                //             newData.push(item)
+                //         }
+                //     })
+                // }
                 _this.controlList=newData //= newData;
                 _this.dialogFormControl = true
+                _this.generateData()
+                console.log(_this.controlList)
             }).catch(err => {
               console.log(err)  
             });
             
         },
+        // controlListData(type){
+        //     let newData = []
+        //         if(_this.type === 'user'){ // 用户管理
+        //             res.data.forEach(item => {
+
+        //                 if(item.userid === _this.rowId || !item.userid){
+        //                     if(item.userid !==0){
+        //                         setTimeout(() =>{
+        //                             this.$refs.controlTable.toggleRowSelection(item);
+        //                         },0)
+        //                     }
+        //                     newData.push(item)
+        //                     // if(item.status!='-1'){
+        //                     // }
+        //                 }
+        //             });
+        //         }
+        //         if(_this.type === 'quene'){ //队列标识
+        //             console.log(res.data)
+        //             res.data.forEach(item =>{
+        //                 if(item.task_queue_id === _this.rowId||!item.task_queue_id){
+        //                     if(item.task_queue_id !==0){
+        //                         setTimeout(() =>{
+        //                             this.$refs.controlTable.toggleRowSelection(item);
+        //                         },0)
+        //                     }
+        //                     //  if(item.status!='-1'){
+        //                     //      }
+        //                     newData.push(item)
+        //                 }
+        //             })
+        //         }
+        //         if(_this.type === 'queneTag'){
+        //             res.data.forEach(item =>{
+        //                 if(item.queue_tag_id === _this.rowId||!item.task_queue_id){
+        //                     if(item.queue_tag_id !==0){
+        //                         setTimeout(() =>{
+        //                             this.$refs.controlTable.toggleRowSelection(item);
+        //                         },0)
+        //                     }
+        //                     // if(item.status!='-1'){
+        //                     //     }
+        //                     newData.push(item)
+        //                 }
+        //             })
+        //         }
+        // },
         // 格式化时间
         dateFormat(date) {
             if(date){

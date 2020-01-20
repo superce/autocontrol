@@ -3,7 +3,7 @@ import router from '../router'
 import {Message} from 'element-ui';
 import {getLocal} from "../utils/storage/local";
 // 环境切换
-let base_url = 'http://api.okaymw.com/'//'http://192.168.205.21:8081' //'http://api.okaymw.com/'
+let base_url = 'http://botapi.anyelse.com/'//'http://192.168.205.21:8081' //'http://api.okaymw.com/'
 if (process.env.NODE_ENV === 'production') {
     if (process.env.VUE_APP_BASE_URL) {
         base_url = process.env.VUE_APP_BASE_URL
