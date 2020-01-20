@@ -145,7 +145,7 @@ export default {
             if(!state){
                 this.taskTagId = ''
             }
-            this.getTaskList(this.currentPage,this.taskTitle)
+            this.getTaskList(this.currentPage,this.taskTitle,this.taskTagId)
         },
         // 通过标签队列
         searchTag(val){
