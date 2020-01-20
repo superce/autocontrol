@@ -116,16 +116,19 @@ export default {
             //return data
         },
         leftChange(sa,d){
-            console.log(sa,d)
+            // console.log(sa,d)
         },
         // 左右分配按钮
         handleChange(value, direction, movedKeys) {
             console.log(value, direction, movedKeys);
             let r = []
             this.unIds = []
+            // 过滤已选择的id
             r = this.controlList.filter(f =>{
-                console.log(f.id)
-
+                return this.SelectionChange.indexOf(f.id)==-1
+            })
+            r.forEach(r =>{
+                this.unIds.push(r.id)
             })
             if(direction === 'left'){
 
