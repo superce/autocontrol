@@ -61,9 +61,10 @@
               <el-input v-model="wCount"></el-input>
             </el-form-item>
             <el-form-item label="4G网络设置">
-              <el-select v-model="isSelectIp" @change="changeIp" placeholder="请选择">
-                <el-option label="不换IP" value="1"></el-option>
-                <el-option label="换IP" value="2"></el-option>
+              <el-select v-model="site4g.mode" @change="changeIp" placeholder="请选择">
+                <el-option label="不换IP" value="-1"></el-option>
+                <el-option label="间隔时间" value="0"></el-option>
+                <el-option label="间隔次数" value="1"></el-option>
               </el-select>
               <!-- <el-cascader
                 v-model="isSelectIp"
@@ -172,11 +173,15 @@
 			  <img :src="bigImg" alt="">
 		  </el-dialog>
 	  </div>
-      <!-- <div class="pages"> -->
-        <ul class="pages" v-if="pages>1">
-          <li v-for="(page,index) in pages" :key="index+'page'" @click="goPage(index+1)">{{page}}</li>
-        </ul>
-      <!-- </div> -->
+    <div class="pages">
+      <el-pagination
+        background
+        hide-on-single-page
+        layout="prev, pager, next"
+        :page-count='pages'
+        @current-change='goPage'>
+      </el-pagination>
+    </div>
     </div>
   </div>
 </template>
@@ -241,7 +246,7 @@ export default {
         serverList: "", //服务器类型列表
         queueList: "" //d队列列表
       },
-      pages: "", //分页
+      pages: 0, //分页
       timer: false,
       editRobot: [],
       disabled: true,
@@ -371,6 +376,7 @@ export default {
     },
     // 选择ip模式
     changeIp(val){
+      console.log(val)
       this.isShow4G=false
       if(val.length>=2&&this.editIds.length>1){
         this.isShow4G=true
@@ -920,4 +926,5 @@ export default {
 .is-show-4g{font-size: 12px;line-height: 20px;color:rgba(235, 5, 5, 0.698)}
 .seconds-15{color:rgba(235, 5, 5, 0.698)}
 .error-nomal{background: #ccc}
+.pages{text-align: center;margin-top: 10px;}
 </style>
