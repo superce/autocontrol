@@ -72,7 +72,12 @@
                     </el-table-column>
                     <el-table-column prop="pubDate" label="执行时间" width="180">
                         <template slot-scope="{row}">
-                            {{dateFormats(row.pubDate)}}
+                            {{dateFormats(row.runDate)}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="pubDate" label="完成时间" width="180">
+                        <template slot-scope="{row}">
+                            {{dateFormats(row.complateDate)}}
                         </template>
                     </el-table-column>
                     <el-table-column prop="" label="操作" width="180">
