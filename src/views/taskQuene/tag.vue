@@ -41,7 +41,7 @@
                 <el-table-column prop="addtime" label="操作">
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini" @click="editControl(row)">修改</el-button>
-                        <el-button type="primary" size="mini" @click="disControl(row)" :loading='row.loading'>分配中控</el-button>
+                        <el-button type="primary" size="mini" @click="disControl(row)">分配中控</el-button>
                         <el-button type="primary" size="mini" @click="willTask(row.task_queue_id,row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
                     </template>
                 </el-table-column>
@@ -173,7 +173,6 @@ export default {
             }).finally(()=>{loading.close()})
         },
         disControl(item){
-            item.loading=true
             this.disControlId=item.id
             this.$refs.clickChild.getControlList()
         },
