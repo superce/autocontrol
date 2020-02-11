@@ -23,6 +23,17 @@
           </el-select>
         </div>
         <div>
+          <span>网络状态:</span>
+          <el-select v-model="params.netState" placeholder="请选择">
+            <el-option
+              v-for="(item,index) in netStatus"
+              :key="index+'netStatus'"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div>
           <span>使用人:</span>
           <el-input v-model="params.userName" placeholder="请输入内容"></el-input>
         </div>
@@ -218,6 +229,7 @@ export default {
         name: "",
         queue_title: "",
         status: "",
+        netState:'',
         username: "",
         server_title: "",
         start_date: "",
@@ -227,6 +239,12 @@ export default {
         { name: "全部", id: "" },
         { name: "正常", id: 0 },
         { name: "停用", id: -1 }
+      ],
+      netStatus:[
+        {name:"全部",id:''},
+        {name:"网络正常",id:0},
+        {name:'网络异常',id:-1},
+        {name:'心跳异常',id:9999}
       ],
       site4g: {
         con_type: "",
@@ -641,7 +659,8 @@ export default {
         uid: this.params.uid,
         start_date: s,
         end_date: e,
-        status: this.params.status
+        status: this.params.status,
+        net_state:this.params.netState
       }).then(res => {
         _this.list = []
         let newData = []
