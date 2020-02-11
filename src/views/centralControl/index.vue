@@ -804,7 +804,7 @@ export default {
   filters: {
     netState(state) {
       switch (state) {
-        case 0:
+        case '0':
           return "正常";
           break;
         default:
