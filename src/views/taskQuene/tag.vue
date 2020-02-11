@@ -41,7 +41,7 @@
                 <el-table-column prop="addtime" label="操作">
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini" @click="editControl(row)">修改</el-button>
-                        <el-button type="primary" size="mini" @click="disControl(row.id)">分配中控</el-button>
+                        <el-button type="primary" size="mini" @click="disControl(row)" :loading='row.loading'>分配中控</el-button>
                         <el-button type="primary" size="mini" @click="willTask(row.task_queue_id,row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
                     </template>
                 </el-table-column>
@@ -144,6 +144,12 @@ export default {
             this.getList(i)
         },
         getList(i){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.5)'
+            });
             i = i?i:1
             console.log(i)
             getQueueTagList({
@@ -154,16 +160,22 @@ export default {
                 tag_name:''
             }).then(res =>{
                 if(res.state){
-                    this.tagList=res.data
+                    let items = []
+                    res.data.forEach(item =>{
+                        item.loading = false
+                        items.push(item)
+                    })
+                    this.tagList=items//res.data
                     this.total = res.total
                 }
             }).catch(err =>{
                 console.log(err)
-            })
+            }).finally(()=>{loading.close()})
         },
-        disControl(id){
-            this.disControlId=id
-             this.$refs.clickChild.getControlList()
+        disControl(item){
+            item.loading=true
+            this.disControlId=item.id
+            this.$refs.clickChild.getControlList()
         },
         // 保存标签
         createTagSave(){

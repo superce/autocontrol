@@ -89,13 +89,16 @@ export default {
             data: [],//this.generateData(),
             value: [],
             renderFunc(h, option) {
-                return <span>{ `${option.label}--${option.ip}` }</span>;
+                return <span>{ `${option.label}${option.remark}` }</span>;
             }
         }
     },
     computed:{
         userId(){
             return this.$store.state.userId || getLocal('userId') || '' 
+        },
+        isSuper(){
+            return this.$store.state.isSuper || getLocal('isSuper') || ''
         }
     },
     methods:{
@@ -107,11 +110,17 @@ export default {
                 if(this.controlList[i-1].ip){
                     ip = this.controlList[i-1].ip
                 }
-                data.push({
+                let item = {
                     ip:ip,
                     key: this.controlList[i-1].id,
-                    label: this.controlList[i-1].name
-                });
+                    label: this.controlList[i-1].name,
+                    remark:''
+                }
+                if(this.isSuper==1){
+                    let remark = this.controlList[i-1].remark?this.controlList[i-1].remark:'无备注'
+                    item.remark = `(${remark})`
+                }
+                data.push(item);
             }
             this.data = data
             //return data
