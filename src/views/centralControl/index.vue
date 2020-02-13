@@ -71,8 +71,9 @@
             <el-form-item label="窗口数量" class="input-item">
               <el-input v-model="wCount"></el-input>
             </el-form-item>
-            <el-form-item label="4G网络设置">
-              <el-select v-model="site4g.mode" @change="changeIp" placeholder="请选择">
+            {{site4g.mode}}
+            <el-form-item v-if="isSuper===1" label="4G网络设置">
+              <el-select v-model="site4g.mode" placeholder="请选择" @change="changeModle">
                 <el-option label="不换IP" value="-1"></el-option>
                 <el-option label="间隔时间" value="0"></el-option>
                 <el-option label="间隔次数" value="1"></el-option>
@@ -84,13 +85,26 @@
                 :show-all-levels="false"
                 @change="changeIp">
               </el-cascader> -->
-              <p class="is-show-4g" v-show="isShow4G">4G网络配置不一致，保存后将改为统一配置</p>
+              <!-- <p class="is-show-4g" v-show="isShow4G">4G网络配置不一致，保存后将改为统一配置</p> -->
             </el-form-item>
           </el-form>
           <!-- <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')"> -->
-          <div v-show="isSelectIp=='2'">
+          <div v-show="site4g.mode !=='-1'">
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
+              <el-form-item v-if="isSuper===1" label="备注" class="input-item">
+                <el-input v-model="remark"></el-input>
+              </el-form-item>
+              <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item">
+                <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="请选择运营商">
+                  <el-option value="0" label="台湾中华电信"></el-option>
+                  <el-option value="1" label="香港移动大陆卡"></el-option>
+                  <el-option value="2" label="香港csl"></el-option>
+                  <el-option value="3" label="香港数码通（smartone）"></el-option>
+                  <el-option value="4" label="香港3hk"></el-option>
+                  <el-option value="5" label="台湾远传"></el-option>
+                </el-select>
+              </el-form-item>
               <el-form-item v-if="isSuper===1" label="连接类型" prop="con_type">
                 <el-select v-model="site4g.con_type" placeholder="选择连接类型">
                   <el-option value="0" label="Api"></el-option>
@@ -107,23 +121,14 @@
               <el-form-item v-if="isSuper===1" label="密码" class="input-item" prop="password">
                 <el-input v-model="site4g.password"></el-input>
               </el-form-item>
-              <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item">
-                <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="请选择运营商">
-                  <el-option value="0" label="台湾中华电信"></el-option>
-                  <el-option value="1" label="香港移动大陆卡"></el-option>
-                  <el-option value="2" label="香港csl"></el-option>
-                  <el-option value="3" label="香港数码通（smartone）"></el-option>
-                  <el-option value="4" label="香港3hk"></el-option>
-                  <el-option value="5" label="台湾远传"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="模式" prop="mode">
+              
+              <!-- <el-form-item label="模式" prop="mode">
                 <el-select v-model="site4g.mode" placeholder="模式" @change="changeModle">
                   <el-option value="-1" label="停用"></el-option>
                   <el-option value="0" label="间隔时间"></el-option>
                   <el-option value="1" label="间隔次数"></el-option>
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item :label="editModle || '间隔'" class="input-item" prop="interval">
                 <el-input v-model="site4g.interval" :disabled="editModle==='停用'"></el-input>
               </el-form-item>
@@ -189,8 +194,9 @@
         background
         hide-on-single-page
         layout="prev, pager, next"
+        :current-page.sync='currentPage'
         :page-count='pages'
-        @current-change='goPage'>
+        @current-change='goPage(currentPage)'>
       </el-pagination>
     </div>
     </div>
@@ -265,13 +271,14 @@ export default {
         queueList: "" //d队列列表
       },
       pages: 0, //分页
+      currentPage:1,//当前页
       timer: false,
       editRobot: [],
       disabled: true,
       editGroup:'', // 判断是分组还是编辑
       groupName:'', //分组名称
       isEditName:'',
-      isSelectIp:'1', //是否换ip
+      isSelectIp:'', //是否换ip
       isSelectStatus:'', //启用停用状态
       wCount:'', // 窗口数量
       isShow4G:false, // 是否多选中控4g配置
@@ -296,11 +303,12 @@ export default {
           }]
         }
       ],
+      remark:'',//备注
       editLoading:false // 编辑按钮的状态||保存按钮
     };
   },
   created() {
-    this.search();
+    this.getList();
   },
   computed: {
     userId() {
@@ -327,7 +335,8 @@ export default {
         server_type_id:id
       }).then(res =>{
         this.$message.success('解散分组成功')
-        this.getControlList('','',1)
+        this.currentPage=1
+        this.getControlList('','',this.currentPage)
       }).catch(err =>{
         console.log(err)
       })
@@ -343,7 +352,8 @@ export default {
         server_title:this.groupName
       }).then(res =>{
         if(res.data.state=='success'){
-          this.getControlList('','',1)
+          this.currentPage=1
+          this.getControlList('','',this.currentPage)
           this.dialogEdit = false
           this.$message.success('分组成功')
         }else{
@@ -393,13 +403,13 @@ export default {
       console.log(val)
     },
     // 选择ip模式
-    changeIp(val){
-      console.log(val)
-      this.isShow4G=false
-      if(val.length>=2&&this.editIds.length>1){
-        this.isShow4G=true
-      }
-    },
+    // changeIp(val){
+    //   console.log(val)
+    //   this.isShow4G=false
+    //   if(val.length>=2&&this.editIds.length>1){
+    //     this.isShow4G=true
+    //   }
+    // },
     edit() {
       this.editGroup = 'edit'
       //点编辑按钮之前判断有没有选择中控
@@ -440,6 +450,7 @@ export default {
           this.list.forEach(items =>{
             items.itemList.forEach(item =>{
               if(this.editIds[0]===item.id){
+                this.remark=item.remark
                 this.isEditName = item.name
                 this.isSelectStatus = item.status
                 this.wCount = item.w_count
@@ -460,13 +471,21 @@ export default {
               }
             if(g4Index){
               console.log('不换IP',g4Index) //g4Index 为true  不换ip
-              this.isSelectIp='1'
+              // this.isSelectIp='1'
+              this.site4g.mode='-1'
             }else{
               console.log('换IP')
-              this.isSelectIp='2'
+              //this.isSelectIp='2'
             }
+          }else{
+            this.site4g.mode='-1'
+            // if(g4Index){
+            //   console.log('不换IP',g4Index) //g4Index 为true  不换ip
+            //   // this.isSelectIp='1'
+            // }
           }
         }else{
+          this.remark=''
           // 多选中控的时候,取数据第一条不为空的配置
           for(var i = 0;i<copySite4g.length;i++){
             if(copySite4g[i]){
@@ -520,7 +539,7 @@ export default {
         ids:this.editIds
       }).then(res =>{
         if(res.data.state==='success'){
-          this.search()
+          this.getList()
           this.editIds=[]
           this.$message.success('移除中控成功')
         }else{
@@ -548,7 +567,7 @@ export default {
       let site4g = this.site4g;
       let json4g = JSON.stringify(site4g);
       params.json4g=json4g
-      if(this.isSelectIp==1){ 
+      if(!this.site4g.mode){ 
         this.saveEditApi(params)
       }else{ // 换IP
         // if(this.isSelectIp.length>1&&this.isSelectIp[1]==1){ //默认配置
@@ -581,6 +600,7 @@ export default {
         name:p.name,
         w_count:p.w_count,
         status:p.status,
+        remark:this.remark
         // settingtype:p.settingtype
       }).then(res => {
         if(res.data.state === 'error'){
@@ -590,7 +610,7 @@ export default {
             message: res.data.msg,
             type: "success"
           });
-          this.search()
+          this.getList()
           this.dialogEdit = false
         }
       }).catch(err => {
@@ -620,8 +640,12 @@ export default {
         return searchTime;
       }
     },
+    search(){
+      this.currentPage=1
+      this.getList()
+    },
     // 获取列表
-    search() {
+    getList() {
       let start = this.startTime();
       let end = this.endTime();
       if (end < start) {
@@ -636,7 +660,7 @@ export default {
         this.$message.error("请选择结束时间");
         return false;
       }
-      this.getControlList(start, end, 1);
+      this.getControlList(start, end, this.currentPage);
     },
     // 获取列表api
     getControlList(s, e, index) {
@@ -808,17 +832,17 @@ export default {
     dialogTableVisible(val){
       if(!val) this.bigImg = ''
     },
-    site4g(val){
-      // 监控选择的模式
-      switch (val.mode) {
-        case "-1":
-          return this.editModle = '停用'
-        case "0":
-          return (this.editModle = "间隔时间");
-        case "1":
-          return (this.editModle = "间隔次数");
-      }
-    }
+    // site4g(val){
+    //   // 监控选择的模式
+    //   switch (val.mode) {
+    //     case "-1":
+    //       return this.editModle = '停用'
+    //     case "0":
+    //       return (this.editModle = "间隔时间");
+    //     case "1":
+    //       return (this.editModle = "间隔次数");
+    //   }
+    // }
   },
   filters: {
     netState(state) {
