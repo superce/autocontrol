@@ -71,7 +71,6 @@
             <el-form-item label="窗口数量" class="input-item">
               <el-input v-model="wCount"></el-input>
             </el-form-item>
-            {{site4g.mode}}
             <el-form-item v-if="isSuper===1" label="4G网络设置">
               <el-select v-model="site4g.mode" placeholder="请选择" @change="changeModle">
                 <el-option label="不换IP" value="-1"></el-option>
@@ -89,7 +88,7 @@
             </el-form-item>
           </el-form>
           <!-- <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')"> -->
-          <div v-show="site4g.mode !=='-1'">
+          <div v-show="site4g.mode !=='-1'&&site4g.mode!==''">
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
               <el-form-item v-if="isSuper===1" label="备注" class="input-item">
@@ -567,7 +566,7 @@ export default {
       let site4g = this.site4g;
       let json4g = JSON.stringify(site4g);
       params.json4g=json4g
-      if(!this.site4g.mode){ 
+      if(this.site4g.mode==='-1'){ 
         this.saveEditApi(params)
       }else{ // 换IP
         // if(this.isSelectIp.length>1&&this.isSelectIp[1]==1){ //默认配置
@@ -826,7 +825,14 @@ export default {
         // this.isSelectIp = ''
         this.wCount=''
         this.isShow4G=false
-        this.site4g = {}
+        this.site4g = {
+          con_type: "",
+          username: "",
+          password: "",
+          interval: "",
+          mode: "",
+          iptype:''
+        }
       }
     },
     dialogTableVisible(val){
