@@ -590,12 +590,16 @@ export default {
     // 保存api
     saveEditApi(p){
       this.editLoading=true
+      let type = '2'
+      if(p.json4g.mode==='-1'){
+        type = '1'
+      }
       //this.isSelectIp=Number(this.isSelectIp[0])
       apiEditZkUpdate({
         userid: this.userId,
         ids: this.editIds,
         g4: p.json4g,
-        type:this.isSelectIp,
+        type:type,
         name:p.name,
         w_count:p.w_count,
         status:p.status,

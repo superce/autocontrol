@@ -22,6 +22,7 @@
                     <el-option label="已取走" value="1"></el-option>
                     <el-option label="失败" value="-1"></el-option>
                     <el-option label="执行超时" value="-2"></el-option>
+                    <el-option label="沉默超时" value="-3"></el-option>
                     <el-option label="未执行" value="0"></el-option>
                 </el-select>
             </div>
@@ -64,7 +65,7 @@
                             {{filterTag(row.tag)}}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="timeout" label="沉默时间(s)" width="150"></el-table-column>
+                    <el-table-column prop="timeout" label="超时时间(s)" width="150"></el-table-column>
                     <el-table-column prop="addDate" label="添加时间" width="180">
                         <template slot-scope="{row}">
                             {{dateFormats(row.addDate)}}
@@ -288,7 +289,7 @@ export default {
                 case -2:
                     return '执行超时';
                 case -3:
-                    return '执行超时';
+                    return '沉默超时';
             }
         }
     }
