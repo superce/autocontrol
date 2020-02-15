@@ -140,6 +140,16 @@ export default {
     computed:{
         userId(){
             return this.$store.state.userId || getLocal('userId') || ''
+        },
+        queryQueueId(){
+            let id = this.$route.query.task_id||''
+            typeof id === 'number'?id:id=Number(id)
+            return id
+        },
+        queryTagId(){
+            let id = this.$route.query.tag_id||''
+            typeof id === 'number'?id:id=Number(id)
+            return id
         }
     },
     methods:{
@@ -200,10 +210,19 @@ export default {
                 if(res.data.state === 'error'){
                     this.$message.error(res.data.msg)
                 }else{
+                    let one = ''
                     this.queueList = res.data
-                    let one = res.data[0].id
+                    if(this.queryQueueId){
+                        console.log(typeof this.queryQueueId)
+                        one = this.queryQueueId
+                    }else{
+                        one = res.data[0].id
+                    }
+                    if(this.queryTagId){
+                        this.taskTagId = this.queryTagId
+                    }
                     this.taskTitle = one
-                    this.getTaskList(1,one)
+                    this.getTaskList(1,one,this.taskTagId)
                 }
             }).catch(err =>{
 

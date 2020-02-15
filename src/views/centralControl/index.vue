@@ -180,8 +180,8 @@
                   <p>
                     <span>状态:</span><em :class="item.status=='0'?'normal':'abnormal'">{{item.status | controlStatus}}</em>
                     <span class="btn-span">
-                      <el-button type="primary" class="mini">积压</el-button>
-                      <el-button type="primary" class="mini">历史</el-button>
+                      <el-button type="primary" class="mini" @click='toTagList(item)'>积压</el-button>
+                      <el-button type="primary" class="mini" @click="toTaskList(item)">历史</el-button>
                     </span>
                   </p>
                 </div>
@@ -818,6 +818,26 @@ export default {
         return `${day}`   
       }
     },
+    // 积压任务跳转
+    toTagList(item){
+      this.$router.push({
+        name:'tag',
+        query:{
+          id:item.queue_tag_id,
+          will_task:'true'
+        }
+      })
+    },
+    toTaskList(item){
+      this.$router.push({
+        name:"taskList",
+        query:{
+          task_id:item.task_queue_id,
+          tag_id:item.queue_tag_id
+        }
+      })
+    }
+    
   },
 
   watch: {

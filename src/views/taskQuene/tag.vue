@@ -113,7 +113,7 @@ export default {
             disControlId:'',
             total:0, //总页数
             currentPage:1, //当前页数
-            isWillTask:false,
+            isWillTask:false, //弹窗字段
             WillTaskList:[],
             taskqueueid:0,
             tasktagId:0,
@@ -123,6 +123,9 @@ export default {
     computed:{
         queueId(){
             return this.$route.query.id
+        },
+        queryWillTask(){
+            return this.$route.query.will_task || 'false'
         }
     },
     watch:{
@@ -167,6 +170,7 @@ export default {
                     })
                     this.tagList=items//res.data
                     this.total = res.total
+                    this.queryWillTask==='true'?this.isWillTask = true:this.isWillTask
                 }
             }).catch(err =>{
                 console.log(err)
