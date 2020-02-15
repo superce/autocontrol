@@ -177,7 +177,13 @@
                   <!-- <p><span>使用人:</span>{{item.username || '无'}}</p>
                   <p><span>心跳时间:</span><span :class="item.isSeconds?'':'seconds-15'">{{dateFormat(item.lastcore,item.id)}}</span></p> -->
                   <p><span>窗口数量:</span>{{item.w_count}}</p>
-                  <p><span>状态:</span><em :class="item.status=='0'?'normal':'abnormal'">{{item.status | controlStatus}}</em></p>
+                  <p>
+                    <span>状态:</span><em :class="item.status=='0'?'normal':'abnormal'">{{item.status | controlStatus}}</em>
+                    <span class="btn-span">
+                      <el-button type="primary" class="mini">积压</el-button>
+                      <el-button type="primary" class="mini">历史</el-button>
+                    </span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -931,6 +937,7 @@ export default {
   text-overflow:ellipsis;
   white-space: nowrap;
 }
+.central-control .control > .right p .btn-span{margin-left: 25px;}
 .central-control .el-row .item {
   position: relative;
 }
