@@ -390,7 +390,7 @@ export default {
     },
     enlarge(img) {
       this.dialogTableVisible = true
-      this.bigImg = `http://api.okaymw.com/api/screen?uid=${img}`
+      this.bigImg = `http://botapi.anyelse.com/api/screen?uid=${img}`
     },
     changeModle(val) {
       // 监控选择的模式
