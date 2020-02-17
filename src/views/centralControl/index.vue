@@ -194,6 +194,8 @@
 			  <img :src="bigImg" alt="">
 		  </el-dialog>
 	  </div>
+    <!-- 积压任务弹窗 -->
+    <will-task ref="task"></will-task>
     <div class="pages">
       <el-pagination
         background
@@ -212,7 +214,9 @@
 import {apiGetControlList,apiGetZkUserList,apiEditZkUpdate,setControlGroup,dissControlGroup,removeContorlItem} from "@/request/api";
 import { getLocal } from "@/utils/storage";
 import { dateFormat } from "@/utils/common";
+import willTask from '@/components/willTask'
 export default {
+  components:{willTask},
   data() {
     return {
       rules: {
@@ -820,13 +824,7 @@ export default {
     },
     // 积压任务跳转
     toTagList(item){
-      this.$router.push({
-        name:'tag',
-        query:{
-          id:item.queue_tag_id,
-          will_task:'true'
-        }
-      })
+      this.$refs.task.willTask(item.task_queue_id,item.queue_tag_id)
     },
     toTaskList(item){
       this.$router.push({

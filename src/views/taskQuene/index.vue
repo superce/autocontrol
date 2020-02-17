@@ -381,7 +381,7 @@ export default {
             })
         },
         getWillTask(id){
-            this.$refs.task.willTask(id)
+            this.$refs.task.willTask(id,0)
         },
         // // 查看积压任务
         // willTask(id){
@@ -411,9 +411,9 @@ export default {
          
         //         });
         // },
-        timeAdd0(m){
-            return m>10?m:'0'+m
-        },
+        // timeAdd0(m){
+        //     return m>10?m:'0'+m
+        // },
         // deleteApi(){
         //     let date = new Date()
         //     let year = date.getFullYear()

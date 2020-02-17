@@ -33,16 +33,19 @@ export default {
         return {
             isWillTask:false, // 积压任务弹窗
             WillTaskList:[], //积压任务列表弹窗
-            TaskCount:0
+            TaskCount:0,
+            queueid:0,
+            tasktagId:0
         }
     },
     methods:{
         // 查看积压任务
-        willTask(id){
+        willTask(id,tagid){
             this.queueid = id
+            this.tasktagId = tagid
             apiGetWillDoTask({
                 queueid:id,
-                tag:0
+                tag:tagid
             }).then(res =>{
                 if(res.state){
                     this.TaskCount = res.count
@@ -65,6 +68,9 @@ export default {
          
                 });
         },
+        timeAdd0(m){
+            return m>10?m:'0'+m
+        },
         deleteApi(){
             let date = new Date()
             let year = date.getFullYear()
@@ -74,7 +80,7 @@ export default {
             console.log(time)
             apiDeleteWillDoTask({
                 queueid:this.queueid,
-                tag:0,
+                tag:this.tasktagId,
                 date:time
             }).then(res =>{
                 if(res.state){

@@ -42,7 +42,7 @@
                     <template slot-scope="{row}">
                         <el-button type="primary" size="mini" @click="editControl(row)">修改</el-button>
                         <el-button type="primary" size="mini" @click="disControl(row)">分配中控</el-button>
-                        <el-button type="primary" size="mini" @click="willTask(row.task_queue_id,row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
+                        <el-button type="primary" size="mini" @click="getWillTask(row.task_queue_id,row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -115,10 +115,10 @@ export default {
             disControlId:'',
             total:0, //总页数
             currentPage:1, //当前页数
-            isWillTask:false, //弹窗字段
-            WillTaskList:[],
-            taskqueueid:0,
-            tasktagId:0,
+            //isWillTask:false, //弹窗字段
+            // WillTaskList:[],
+            // taskqueueid:0,
+            // tasktagId:0,
             tagCount:0 // 积压任务数量
         }
     },
@@ -126,9 +126,6 @@ export default {
         queueId(){
             return this.$route.query.id
         },
-        queryWillTask(){
-            return this.$route.query.will_task || 'false'
-        }
     },
     watch:{
         create(val){
@@ -172,7 +169,6 @@ export default {
                     })
                     this.tagList=items//res.data
                     this.total = res.total
-                    this.queryWillTask==='true'?this.isWillTask = true:this.isWillTask
                 }
             }).catch(err =>{
                 console.log(err)
@@ -247,63 +243,66 @@ export default {
 
             })
         },
-         // 查看积压任务
-        willTask(queueid,tagid){
-            this.taskqueueid = queueid
-            this.tasktagId = tagid
-            apiGetWillDoTask({
-                queueid:queueid,
-                tag:tagid
-            }).then(res =>{
-                if(res.state){
-                    this.tagCount = res.count
-                    this.WillTaskList = res.data
-                    this.isWillTask = true
-                }
-            }).catch(err =>{
+        getWillTask(id,tagid){
+            this.$refs.task.willTask(id,tagid)
+        },
+        //  // 查看积压任务
+        // willTask(queueid,tagid){
+        //     this.taskqueueid = queueid
+        //     this.tasktagId = tagid
+        //     apiGetWillDoTask({
+        //         queueid:queueid,
+        //         tag:tagid
+        //     }).then(res =>{
+        //         if(res.state){
+        //             this.tagCount = res.count
+        //             this.WillTaskList = res.data
+        //             this.isWillTask = true
+        //         }
+        //     }).catch(err =>{
 
-            })
-        },
-         // 删除积压任务
-        deleteWillDoTask(){
-            if(this.WillTaskList.length===0){
-                this.$message.error('任务为空')
-                return false
-            }
-            this.$confirm('确认删除?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-                }).then(() => {
-                    this.deleteApi()
-                }).catch(() => {
+        //     })
+        // },
+        //  // 删除积压任务
+        // deleteWillDoTask(){
+        //     if(this.WillTaskList.length===0){
+        //         this.$message.error('任务为空')
+        //         return false
+        //     }
+        //     this.$confirm('确认删除?', '提示', {
+        //         confirmButtonText: '确定',
+        //         cancelButtonText: '取消',
+        //         type: 'warning'
+        //         }).then(() => {
+        //             this.deleteApi()
+        //         }).catch(() => {
          
-                });
-        },
-        timeAdd0(m){
-            return m>10?m:'0'+m
-        },
-        deleteApi(){
-            let date = new Date()
-            let year = date.getFullYear()
-            let m = date.getMonth()+1
-            let day = date.getDate()
-            let time = `${year}-${this.timeAdd0(m)}-${this.timeAdd0(day)}`
-            console.log(time)
-            apiDeleteWillDoTask({
-                queueid:this.taskqueueid,
-                tag:this.tasktagId,
-                date:time
-            }).then(res =>{
-                if(res.state){
-                    this.isWillTask = false
-                }else{
-                    this.$message.error(res.msg)
-                }
-            }).catch(err =>{
-                this.$message.error(err.msg)
-            })
-        },
+        //         });
+        // },
+        // timeAdd0(m){
+        //     return m>10?m:'0'+m
+        // },
+        // deleteApi(){
+        //     let date = new Date()
+        //     let year = date.getFullYear()
+        //     let m = date.getMonth()+1
+        //     let day = date.getDate()
+        //     let time = `${year}-${this.timeAdd0(m)}-${this.timeAdd0(day)}`
+        //     console.log(time)
+        //     apiDeleteWillDoTask({
+        //         queueid:this.taskqueueid,
+        //         tag:this.tasktagId,
+        //         date:time
+        //     }).then(res =>{
+        //         if(res.state){
+        //             this.isWillTask = false
+        //         }else{
+        //             this.$message.error(res.msg)
+        //         }
+        //     }).catch(err =>{
+        //         this.$message.error(err.msg)
+        //     })
+        // },
         // 选择中控
         handleSelectionChange(val){
             this.deleteTagId=[]
