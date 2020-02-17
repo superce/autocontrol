@@ -71,6 +71,9 @@
             <el-form-item label="窗口数量" class="input-item">
               <el-input v-model="wCount"></el-input>
             </el-form-item>
+            <el-form-item v-if="isSuper===1" label="备注" class="input-item">
+              <el-input v-model="remark"></el-input>
+            </el-form-item>
             <el-form-item v-if="isSuper===1" label="4G网络设置">
               <el-select v-model="site4g.mode" placeholder="请选择" @change="changeModle">
                 <el-option label="不换IP" value="-1"></el-option>
@@ -88,12 +91,9 @@
             </el-form-item>
           </el-form>
           <!-- <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')"> -->
-          <div v-show="site4g.mode !=='-1'&&site4g.mode!==''">
+          <div v-show="site4g.mode !=='-1'&&site4g.mode!==''&&isSuper===1">
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
-              <el-form-item v-if="isSuper===1" label="备注" class="input-item">
-                <el-input v-model="remark"></el-input>
-              </el-form-item>
               <el-form-item v-if="isSuper===1" label="修改运营商" class="input-item">
                 <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="请选择运营商">
                   <el-option value="0" label="台湾中华电信"></el-option>
@@ -567,11 +567,12 @@ export default {
         status:status,
         settingtype:0
       }
-      console.log(this.isSelectIp)
       // 不换IP
       let site4g = this.site4g;
       let json4g = JSON.stringify(site4g);
       params.json4g=json4g
+      console.log('123')
+      console.log(params.json4g.mode)
       if(this.site4g.mode==='-1'){ 
         this.saveEditApi(params)
       }else{ // 换IP
@@ -597,9 +598,12 @@ export default {
     saveEditApi(p){
       this.editLoading=true
       let type = '2'
-      if(p.json4g.mode==='-1'){
+      let modeType = p.json4g
+      if(modeType.mode==='-1'){
         type = '1'
       }
+      console.log('baocun')
+      console.log(type)
       //this.isSelectIp=Number(this.isSelectIp[0])
       apiEditZkUpdate({
         userid: this.userId,

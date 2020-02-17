@@ -43,4 +43,4 @@ ul.pages li{width: 30px;height: 30px;margin: 0 5px;background: #409EFF;line-heig
 .el-transfer__buttons .el-button+.el-button{margin-left: 0;}
 .el-transfer-panel__body{height: 300px !important;}
 .el-transfer-panel__list.is-filterable{height: 254px !important;}
-.central-control .control .right p .mini{width: 40px;height: 20px;padding: 0;}
+.central-control .control .right p .mini{width: 40px;height: 20px;padding: 0;margin-left: 1px;}

@@ -32,7 +32,9 @@ router.beforeEach((to,from,next) =>{
   }
   next()
 })
-
+router.afterEach((to,from)=>{
+  window.scrollTo(0, 0)
+})
 //过滤器
 Object.keys(filter).forEach((key) => {
   Vue.filter(key, filter[key]);
