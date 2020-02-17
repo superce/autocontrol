@@ -48,7 +48,8 @@
             </el-table>
         </div>
         <!-- 积压任务弹窗 -->
-        <div class="will-task">
+        <will-task ref="task"></will-task>
+        <!-- <div class="will-task">
             <el-dialog :visible.sync="isWillTask">
                 <el-table :data="WillTaskList" style="width: 100%" height="550" ref='controlTable' stripe @selection-change="handleSelectionChange">
                     <el-table-column type="expand">
@@ -72,7 +73,7 @@
                 </el-table>
                 <el-button :type="WillTaskList.length===0?'info':'primary'" class="delete-will-do" :disabled="WillTaskList.length===0" @click="deleteWillDoTask">删除积压任务</el-button>
             </el-dialog>
-        </div>
+        </div> -->
         <!-- 分页 -->
         <div class="pagination-page">
             <el-pagination
@@ -93,8 +94,9 @@
 import {getQueueTagList,apiSaveQueueTag,apiIsDeleteQueueTag,apiDeleteQueueTag,apiGetWillDoTask,apiDeleteWillDoTask} from '@/request/api'
 import { dateFormat } from "@/utils/common";
 import disControl from '@/components/disControl'
+import willTask from '@/components/willTask'
 export default {
-    components:{disControl},
+    components:{disControl,willTask},
     data(){
         return {
             tagList:[],
