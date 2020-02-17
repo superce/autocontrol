@@ -23,7 +23,6 @@ service.defaults.headers.post['cache-control'] = 'no-cache';
 // 请求拦截器
 service.interceptors.request.use(
     config => {
-        window.scrollTo(0, 0)
         // return new Promise(resolve => {
             let userId = getLocal('userId')
             let path = ['/login']

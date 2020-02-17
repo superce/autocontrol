@@ -42,7 +42,7 @@
                                     <el-button type="primary" size="mini" @click="editQueue(row)">修改</el-button>
                                     <el-button type="primary" size="mini" @click="toDisControl(row.id)">分配中控</el-button>
                                     <el-button type="primary" size="mini" @click="goTag(row.id)">标签</el-button>
-                                    <el-button type="primary" size="mini" @click="willTask(row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
+                                    <el-button type="primary" size="mini" @click="getWillTask(row.id)">积压任务<span class="span-id">(id:{{row.id}})</span></el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -82,9 +82,10 @@
             </el-dialog>
         </div>
         <!-- 积压任务弹窗 -->
-        <div class="will-task">
+        <will-task ref="task"></will-task>
+        <!-- <div class="will-task">
             <el-dialog :visible.sync="isWillTask">
-                <el-table :data="WillTaskList" style="width: 100%" height="550" ref='controlTable' stripe @selection-change="handleSelectionChange">
+                <el-table :data="WillTaskList" style="width: 100%" height="550" ref='controlTable' stripe>
                     <el-table-column type="expand">
                         <template slot-scope="props">
                             <el-form label-position="left" inline class="demo-table-expand"> 
@@ -106,7 +107,7 @@
                 </el-table>
                 <el-button :type="WillTaskList.length===0?'info':'primary'" class="delete-will-do" :disabled="WillTaskList.length===0" @click="deleteWillDoTask">删除积压任务</el-button>
             </el-dialog>
-        </div>
+        </div> -->
         <!-- 中控列表 -->
         <dis-control ref="clickChild" :rowId='disControlId' type='quene'></dis-control>
     </div>
@@ -115,10 +116,11 @@
 import {apiGetQueneList,apiCreateQuene,setQueueGroup,diffQueueGroup,removeQueueItem,apiGetWillDoTask,apiDeleteWillDoTask} from '@/request/api'
 import { dateFormat } from "@/utils/common";
 import disControl from '@/components/disControl'
+import willTask from '@/components/willTask'
 import {getLocal} from '@/utils/storage'
 export default {
     props:['isScroll'],
-    components:{disControl},
+    components:{disControl,willTask},
     data(){
         return {
             params:{
@@ -132,8 +134,8 @@ export default {
                 title:'',
                 remark:' '
             },
-            isWillTask:false, // 积压任务弹窗
-            WillTaskList:[], //积压任务列表弹窗
+            // isWillTask:false, // 积压任务弹窗
+            // WillTaskList:[], //积压任务列表弹窗
             create:false, // 创建队列标识弹窗
             rules:{
                 title: [
@@ -153,7 +155,7 @@ export default {
             pages:0, //页数
             queueid:0,
             tagId:0,
-            TaskCount:0
+            // TaskCount:0
         }
     },
     computed:{
@@ -378,56 +380,59 @@ export default {
                 loading.close()
             })
         },
-        // 查看积压任务
-        willTask(id){
-            this.queueid = id
-            apiGetWillDoTask({
-                queueid:id,
-                tag:0
-            }).then(res =>{
-                if(res.state){
-                    this.TaskCount = res.count
-                    this.WillTaskList = res.data
-                    this.isWillTask = true
-                }
-            }).catch(err =>{
+        getWillTask(id){
+            this.$refs.task.willTask(id)
+        },
+        // // 查看积压任务
+        // willTask(id){
+        //     this.queueid = id
+        //     apiGetWillDoTask({
+        //         queueid:id,
+        //         tag:0
+        //     }).then(res =>{
+        //         if(res.state){
+        //             this.TaskCount = res.count
+        //             this.WillTaskList = res.data
+        //             this.isWillTask = true
+        //         }
+        //     }).catch(err =>{
 
-            })
-        },
-        // 删除积压任务
-        deleteWillDoTask(){
-            this.$confirm('确认删除?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-                }).then(() => {
-                    this.deleteApi()
-                }).catch(() => {
+        //     })
+        // },
+        // // 删除积压任务
+        // deleteWillDoTask(){
+        //     this.$confirm('确认删除?', '提示', {
+        //         confirmButtonText: '确定',
+        //         cancelButtonText: '取消',
+        //         type: 'warning'
+        //         }).then(() => {
+        //             this.deleteApi()
+        //         }).catch(() => {
          
-                });
-        },
+        //         });
+        // },
         timeAdd0(m){
             return m>10?m:'0'+m
         },
-        deleteApi(){
-            let date = new Date()
-            let year = date.getFullYear()
-            let m = date.getMonth()+1
-            let day = date.getDate()
-            let time = `${year}-${this.timeAdd0(m)}-${this.timeAdd0(day)}`
-            console.log(time)
-            apiDeleteWillDoTask({
-                queueid:this.queueid,
-                tag:0,
-                date:time
-            }).then(res =>{
-                if(res.state){
-                    this.isWillTask = false
-                }
-            }).catch(err =>{
-                this.$message.error(err.msg)
-            })
-        },
+        // deleteApi(){
+        //     let date = new Date()
+        //     let year = date.getFullYear()
+        //     let m = date.getMonth()+1
+        //     let day = date.getDate()
+        //     let time = `${year}-${this.timeAdd0(m)}-${this.timeAdd0(day)}`
+        //     console.log(time)
+        //     apiDeleteWillDoTask({
+        //         queueid:this.queueid,
+        //         tag:0,
+        //         date:time
+        //     }).then(res =>{
+        //         if(res.state){
+        //             this.isWillTask = false
+        //         }
+        //     }).catch(err =>{
+        //         this.$message.error(err.msg)
+        //     })
+        // },
         // 选择队列标识分组
         handleSelectionChange(val){
             this.ids=[]
