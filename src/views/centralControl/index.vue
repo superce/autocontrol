@@ -161,7 +161,7 @@
                 <el-checkbox  v-model="item.isSelect" class="select-checkbox"></el-checkbox>
                 <!-- <div v-model="item.isSelect"></div> -->
                 <div class="left">
-                  <img :src="`http://api.okaymw.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
+                  <img :src="`http://botapi.anyelse.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
                   <p v-if="isSecondsFormat(item)" :class="item.net_state==0?'normal':'abnormal'">网络{{item.net_state | netState}}</p>
                   <p v-else class="error-nomal">网络--</p>
                   <div class="left-name">
