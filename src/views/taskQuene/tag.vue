@@ -49,31 +49,6 @@
         </div>
         <!-- 积压任务弹窗 -->
         <will-task ref="task"></will-task>
-        <!-- <div class="will-task">
-            <el-dialog :visible.sync="isWillTask">
-                <el-table :data="WillTaskList" style="width: 100%" height="550" ref='controlTable' stripe @selection-change="handleSelectionChange">
-                    <el-table-column type="expand">
-                        <template slot-scope="props">
-                            <el-form label-position="left" inline class="demo-table-expand"> 
-                                <el-form-item label="ID:">
-                                    <span>{{ props.row.id }}</span>
-                                </el-form-item>
-                                <br>
-                                <el-form-item label="添加时间:">
-                                    <span>{{ dateFormats(props.row.addDate) }}</span>
-                                </el-form-item>
-                                <br>
-                                <el-form-item label="执行时间:">
-                                    <span>{{ dateFormats(props.row.pubDate) }}</span>
-                                </el-form-item>
-                            </el-form>
-                        </template>
-                    </el-table-column>
-                    <el-table-column :label="'积压任务数量:' + tagCount" prop="name"></el-table-column>
-                </el-table>
-                <el-button :type="WillTaskList.length===0?'info':'primary'" class="delete-will-do" :disabled="WillTaskList.length===0" @click="deleteWillDoTask">删除积压任务</el-button>
-            </el-dialog>
-        </div> -->
         <!-- 分页 -->
         <div class="pagination-page">
             <el-pagination
@@ -115,10 +90,6 @@ export default {
             disControlId:'',
             total:0, //总页数
             currentPage:1, //当前页数
-            //isWillTask:false, //弹窗字段
-            // WillTaskList:[],
-            // taskqueueid:0,
-            // tasktagId:0,
             tagCount:0 // 积压任务数量
         }
     },
@@ -246,63 +217,6 @@ export default {
         getWillTask(id,tagid){
             this.$refs.task.willTask(id,tagid)
         },
-        //  // 查看积压任务
-        // willTask(queueid,tagid){
-        //     this.taskqueueid = queueid
-        //     this.tasktagId = tagid
-        //     apiGetWillDoTask({
-        //         queueid:queueid,
-        //         tag:tagid
-        //     }).then(res =>{
-        //         if(res.state){
-        //             this.tagCount = res.count
-        //             this.WillTaskList = res.data
-        //             this.isWillTask = true
-        //         }
-        //     }).catch(err =>{
-
-        //     })
-        // },
-        //  // 删除积压任务
-        // deleteWillDoTask(){
-        //     if(this.WillTaskList.length===0){
-        //         this.$message.error('任务为空')
-        //         return false
-        //     }
-        //     this.$confirm('确认删除?', '提示', {
-        //         confirmButtonText: '确定',
-        //         cancelButtonText: '取消',
-        //         type: 'warning'
-        //         }).then(() => {
-        //             this.deleteApi()
-        //         }).catch(() => {
-         
-        //         });
-        // },
-        // timeAdd0(m){
-        //     return m>10?m:'0'+m
-        // },
-        // deleteApi(){
-        //     let date = new Date()
-        //     let year = date.getFullYear()
-        //     let m = date.getMonth()+1
-        //     let day = date.getDate()
-        //     let time = `${year}-${this.timeAdd0(m)}-${this.timeAdd0(day)}`
-        //     console.log(time)
-        //     apiDeleteWillDoTask({
-        //         queueid:this.taskqueueid,
-        //         tag:this.tasktagId,
-        //         date:time
-        //     }).then(res =>{
-        //         if(res.state){
-        //             this.isWillTask = false
-        //         }else{
-        //             this.$message.error(res.msg)
-        //         }
-        //     }).catch(err =>{
-        //         this.$message.error(err.msg)
-        //     })
-        // },
         // 选择中控
         handleSelectionChange(val){
             this.deleteTagId=[]

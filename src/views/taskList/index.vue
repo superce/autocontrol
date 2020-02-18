@@ -40,6 +40,16 @@
                 </el-select>
             </div>
             <div>
+                <span>每页显示条数:</span>
+                <el-select v-model="pagenum" placeholder="请选择" @change='search("pagenum")'>
+                    <el-option value="15"></el-option>
+                    <el-option value="20"></el-option>
+                    <el-option value="30"></el-option>
+                    <el-option value="50"></el-option>
+                    <el-option value="100"></el-option>
+                </el-select>
+            </div>
+            <div>
                 <el-button type="primary" @click="renovate">刷新</el-button>
             </div>
             <!-- <el-button type="primary" @click="search">搜索</el-button> -->
@@ -131,7 +141,8 @@ export default {
             loading:false,
             taskTitle:'', // 搜索条件队列id
             searchState:'',
-            tagList:[] //标签列表
+            tagList:[], //标签列表
+            pagenum:'15'
         }
     },
     created(){
@@ -174,12 +185,14 @@ export default {
         //获取任务列表
         getTaskList(i,id,tag){ 
             this.loading = true
+            let pagenum = Number(this.pagenum)
             apiGetTaskList({
                 page:i,
-                pagesize:15,
+                pagesize:pagenum,
                 queueid:id,
                 state:this.searchState,
-                tag:tag
+                tag:tag,
+                sort:'RunDate'
             }).then(res =>{
                 this.taskList = res.data
                 this.total = res.pagecount
