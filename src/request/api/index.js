@@ -74,3 +74,6 @@ export const apiGetWillDoTask = p =>get('api/get_will_do_task',p)
 
 // 删除积压任务
 export const apiDeleteWillDoTask = p =>get('/api/delete_will_do_task',p)
+
+// 获取备注
+export const apiGetRemark = p => get('/api/zk/partinfo',p)

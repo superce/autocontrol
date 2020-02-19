@@ -68,7 +68,11 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="jsLink" label="JavaScript"></el-table-column>
-                    <el-table-column prop="machineID" label="中控"></el-table-column>
+                    <el-table-column prop="machineID" label="中控">
+                        <template slot-scope="{row}">
+                            {{row.controlName}}<span v-if="row.remark">({{row.remark}})</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="tagName" label="队列标签" width="150">
                         <template slot-scope="{row}">
                             <!-- {{contrastQunen()}} -->
@@ -114,7 +118,7 @@
     </div>
 </template>
 <script>
-import {apiGetTaskList,apiGetQueneList,updateTask,apiGetTagList} from '@/request/api'
+import {apiGetTaskList,apiGetQueneList,updateTask,apiGetTagList,apiGetRemark} from '@/request/api'
 import {getLocal} from '@/utils/storage'
 import { dateFormat } from "@/utils/common";
 export default {
@@ -142,7 +146,8 @@ export default {
             taskTitle:'', // 搜索条件队列id
             searchState:'',
             tagList:[], //标签列表
-            pagenum:'15'
+            pagenum:'15',
+            remarkList:[] // 备注列表
         }
     },
     created(){
@@ -194,11 +199,30 @@ export default {
                 tag:tag,
                 sort:'RunDate'
             }).then(res =>{
-                this.taskList = res.data
                 this.total = res.pagecount
                 this.getTagList(id)
+                this.getRemark(res.data)
             }).catch(err =>{
                 console.log(err)
+            })
+        },
+        getRemark(data){
+            apiGetRemark().then(res =>{
+                if(res.state){
+                    res.data.forEach(item =>{
+                        data.forEach(pro =>{
+                            if(item.uid === pro.machineID){
+                                pro.remark = item.remark
+                                pro.controlName = item.name
+                            }
+                        })
+                    })
+                    this.taskList = data
+                }else{
+                    this.$message.error('获取中控名称失败')
+                }
+            }).catch(err =>{
+                this.$message.error(err)
             }).finally(()=>{
                 this.loading = false
             })

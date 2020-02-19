@@ -3,7 +3,7 @@ import router from '../router'
 import {Message} from 'element-ui';
 import {getLocal} from "../utils/storage/local";
 // 环境切换
-let base_url = 'http://api.okaymw.com'//'http://192.168.205.21:8081' //'http://api.okaymw.com/'
+let base_url = 'http://botdemoapi.anyelse.com'//'http://api.okaymw.com' //'http://api.okaymw.com/'
 if (process.env.NODE_ENV === 'production') {
     if (process.env.VUE_APP_BASE_URL) {
         base_url = process.env.VUE_APP_BASE_URL
@@ -22,14 +22,10 @@ service.defaults.headers.post['cache-control'] = 'no-cache';
 // 请求拦截器
 service.interceptors.request.use(
     config => {
-        // console.log(config,config.url,config.baseURL)
-        // console.log(config.url)
         let mongoApi = ['/api/mongo_queue_list','api/mongo_taskinfo','api/check_lock_state','api/get_will_do_task','api/delete_will_do_task','api/delete_no_get_task','api/gettask','api/update_task_state']
         if(mongoApi.includes(config.url)){
-            // console.log('http://botapi.anyelse.com')
             config.baseURL = 'http://botapi.anyelse.com'
         }else{
-            // console.log('http://api.okaymw.com/')
             config.baseURL = 'http://api.okaymw.com'
         }
         let apiUrl = ['/api/mongo_queue_list','/api/zk/list','/api/queuetag/list']
