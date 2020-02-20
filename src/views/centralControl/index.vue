@@ -80,14 +80,6 @@
                 <el-option label="间隔时间" value="0"></el-option>
                 <el-option label="间隔次数" value="1"></el-option>
               </el-select>
-              <!-- <el-cascader
-                v-model="isSelectIp"
-                :options="options"
-                :props="{ expandTrigger: 'hover' }"
-                :show-all-levels="false"
-                @change="changeIp">
-              </el-cascader> -->
-              <!-- <p class="is-show-4g" v-show="isShow4G">4G网络配置不一致，保存后将改为统一配置</p> -->
             </el-form-item>
           </el-form>
           <!-- <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')"> -->
@@ -291,27 +283,6 @@ export default {
       isSelectStatus:'', //启用停用状态
       wCount:'', // 窗口数量
       isShow4G:false, // 是否多选中控4g配置
-      options:[
-        {
-          label:'请选择配置',
-          value:'0'
-        },
-        {
-          label:'不换IP',
-          value:'1'
-        },
-        {
-          value: '2',
-          label: '换IP',
-          children: [{
-            value: '1',
-            label: '默认配置'
-          },{
-            value: '2',
-            label: '自选配置'
-          }]
-        }
-      ],
       remark:'',//备注
       editLoading:false // 编辑按钮的状态||保存按钮
     };
@@ -470,6 +441,7 @@ export default {
           if(copySite4g.length>0&&copySite4g[0]){
             let copySite4g_1 = JSON.parse(copySite4g[0])
               copySite4g_1.mode = copySite4g_1.mode.toString()
+              
               this.site4g = {
                 con_type: copySite4g_1.con_type,
                 username: copySite4g_1.username,
@@ -603,11 +575,10 @@ export default {
       this.editLoading=true
       let type = '2'
       let modeType = p.json4g
+      modeType = JSON.parse(modeType)
       if(modeType.mode==='-1'){
         type = '1'
       }
-      console.log('baocun')
-      console.log(type)
       //this.isSelectIp=Number(this.isSelectIp[0])
       apiEditZkUpdate({
         userid: this.userId,
