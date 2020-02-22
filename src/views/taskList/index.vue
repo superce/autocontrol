@@ -50,6 +50,14 @@
                 </el-select>
             </div>
             <div>
+                <span>排序方式:</span>
+                <el-select v-model="SortDate" placeholder="请选择" @change='search("sortdate")'>
+                    <el-option value="AddDate" label="添加时间"></el-option>
+                    <el-option value="RunDate" label='执行时间'></el-option>
+                    <el-option value="ComplateDate" label='完成时间'></el-option>
+                </el-select>
+            </div>
+            <div>
                 <el-button type="primary" @click="renovate">刷新</el-button>
             </div>
             <!-- <el-button type="primary" @click="search">搜索</el-button> -->
@@ -147,7 +155,8 @@ export default {
             searchState:'',
             tagList:[], //标签列表
             pagenum:'15',
-            remarkList:[] // 备注列表
+            remarkList:[], // 备注列表
+            SortDate:'AddDate' //排序方式
         }
     },
     created(){
@@ -197,7 +206,7 @@ export default {
                 queueid:id,
                 state:this.searchState,
                 tag:tag,
-                sort:'RunDate'
+                sort:this.SortDate
             }).then(res =>{
                 this.total = res.pagecount
                 this.getTagList(id)
