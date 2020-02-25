@@ -121,7 +121,7 @@
                 </el-select>
               </el-form-item> -->
               <el-form-item :label="editModle || '间隔'" class="input-item" prop="interval">
-                <el-input v-model="site4g.interval" :disabled="editModle==='停用'"></el-input>
+                <el-input v-model="site4g.interval" :disabled="site4g.mode==='-1'"></el-input>
               </el-form-item>
             </el-form>
           </div>
