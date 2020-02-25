@@ -78,7 +78,7 @@
                     <el-table-column prop="jsLink" label="JavaScript"></el-table-column>
                     <el-table-column prop="machineID" label="中控">
                         <template slot-scope="{row}">
-                            {{row.controlName}}<span v-if="row.remark">({{row.remark}})</span>
+                            {{row.controlName}}<span v-if="row.remark&&isSuper===1">({{row.remark}})</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="tagName" label="队列标签" width="150">
@@ -165,6 +165,9 @@ export default {
     computed:{
         userId(){
             return this.$store.state.userId || getLocal('userId') || ''
+        },
+        isSuper(){
+            return this.$store.state.isSuper || getLocal('isSuper') || ''
         },
         queryQueueId(){
             let id = this.$route.query.task_id||''

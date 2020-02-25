@@ -86,7 +86,7 @@
           <div v-show="site4g.mode !=='-1'&&site4g.mode!==''">
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
-              <el-form-item label="修改运营商" class="input-item">
+              <el-form-item label="修改运营商" v-if="isSuper===1" class="input-item">
                 <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="请选择运营商">
                   <el-option value="0" label="台湾中华电信"></el-option>
                   <el-option value="1" label="香港移动大陆卡"></el-option>
@@ -96,7 +96,7 @@
                   <el-option value="5" label="台湾远传"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="连接类型" prop="con_type">
+              <el-form-item label="连接类型" v-if="isSuper===1" prop="con_type">
                 <el-select v-model="site4g.con_type" placeholder="选择连接类型">
                   <el-option value="0" label="Api"></el-option>
                   <el-option value="1" label="ApiSsl"></el-option>
@@ -106,10 +106,10 @@
                   <el-option value="5" label="Telnet"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="用户名" class="input-item" prop="username">
+              <el-form-item label="用户名" v-if="isSuper===1" class="input-item" prop="username">
                 <el-input v-model="site4g.username"></el-input>
               </el-form-item>
-              <el-form-item label="密码" class="input-item" prop="password">
+              <el-form-item label="密码" v-if="isSuper===1" class="input-item" prop="password">
                 <el-input v-model="site4g.password"></el-input>
               </el-form-item>
               
