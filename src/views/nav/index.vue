@@ -3,11 +3,12 @@
       <div class="nav-list">
         <div>
           <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff" active-text-color='#ffd04b' router @select="handleSelect">
-            <el-menu-item route index="/" @click="home">中控管理</el-menu-item>
-            <el-menu-item @click="taskQuene" route index="/task_quene">队列标识管理</el-menu-item>
+            <el-menu-item router index="/" @click="home">中控管理</el-menu-item>
+            <el-menu-item @click="taskQuene" router index="/task_quene">队列标识管理</el-menu-item>
             <!-- <el-menu-item route index="/contorl_type">中控类型维护界面</el-menu-item> -->
-            <el-menu-item @click="taskList" route index="/task_list">任务列表</el-menu-item>
-            <el-menu-item @click="userMain" route index="/user_main" v-if="isSuper===1&&isSuper">用户管理</el-menu-item>
+            <el-menu-item @click="taskList" router index="/task_list">任务列表</el-menu-item>
+            <el-menu-item @click="systemConfig" router index="/system_config">系统配置</el-menu-item>
+            <el-menu-item @click="userMain" router index="/user_main" v-if="isSuper===1&&isSuper">用户管理</el-menu-item>
           </el-menu>
           <div class="line"></div>
         </div>
@@ -47,8 +48,9 @@ import userImg from '../../assets/images/user.png'
     },
     watch:{
       $route(val){
-        // if()
-        this.activeIndex=val.path
+        if(val.path === '/system_config/admin'||val.path==='/system_config/task'){
+          this.activeIndex='/system_config'
+        }
       }
     },
     computed:{
@@ -86,6 +88,11 @@ import userImg from '../../assets/images/user.png'
       handleSelect(key, keyPath) {
         this.activeIndex = ''
         this.activeIndex=key  
+      },
+      systemConfig(){
+        this.$router.push({
+          name:'systemConfig'
+        })
       },
       logout() {
         this.$confirm('确认退出登录?', '退出登录', {

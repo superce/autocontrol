@@ -77,3 +77,17 @@ export const apiDeleteWillDoTask = p =>get('/api/delete_will_do_task',p)
 
 // 获取备注
 export const apiGetRemark = p => get('/api/zk/partinfo',p)
+
+export const apiGetAddCmdTask = p => post('/api/addcmdtask',p)
+
+// 命令任务
+export const apiGetCmdTaskList = p => post('/api/cmdtask/list')
+
+// 命令列表
+export const apiGetCmdList = p => post('/api/cmd/list',p)
+
+// 编辑命令 （新增和修改）
+export const apiSaveCmd = p => post('/api/cmd/save',p)
+
+//删除命令
+export const apiDeleteCmd = p => post('/api/cmd/delete',p)

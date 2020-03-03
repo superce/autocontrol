@@ -52,6 +52,25 @@ const routes = [
     component: () => import('@/views/taskList/index.vue') //登录
   },
   {
+    path: '/system_config',
+    name: 'systemConfig',
+    meta: { title: '系统配置' },
+    component: () => import('@/views/system/index.vue'),
+    redirect: '/system_config/admin',
+    children:[
+      {
+        path:'admin',
+        name:'admin',
+        component: () => import('@/views/system/admin.vue'),
+      },
+      {
+        path: 'task',
+        name: 'task',
+        component: () => import('@/views/system/task.vue')
+      }
+    ]
+  },
+  {
     path:'*',
     name:'404',
     component:() => import('@/views/404/404.vue')

@@ -26,7 +26,7 @@ service.interceptors.request.use(
         if(mongoApi.includes(config.url)){
             config.baseURL = 'http://botapi.anyelse.com'
         }else{
-            config.baseURL = 'http://api.okaymw.com'
+            config.baseURL = 'http://botdemoapi.anyelse.com' //'http://api.okaymw.com'
         }
         let apiUrl = ['/api/mongo_queue_list','/api/zk/list','/api/queuetag/list']
         if(apiUrl.includes(config.url)){
