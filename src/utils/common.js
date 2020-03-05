@@ -16,3 +16,15 @@ export function dateFormat(date){
         return `${year} ${day}`   
     }
 }
+// 选择时间时，对时间格式处理
+export function repliceDate(date){
+    if (date) {
+        let time8 = 1000 * 60 * (8 * 60)
+        let newData = date.getTime() + time8
+        date = new Date(newData)
+        date = date.toISOString().split('T')[0]
+    } else {
+        date = ''
+    }
+    return date
+}

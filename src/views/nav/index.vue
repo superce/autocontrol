@@ -7,8 +7,8 @@
             <el-menu-item @click="taskQuene" router index="/task_quene">队列标识管理</el-menu-item>
             <!-- <el-menu-item route index="/contorl_type">中控类型维护界面</el-menu-item> -->
             <el-menu-item @click="taskList" router index="/task_list">任务列表</el-menu-item>
-            <el-menu-item @click="systemConfig" router index="/system_config">系统配置</el-menu-item>
             <el-menu-item @click="userMain" router index="/user_main" v-if="isSuper===1&&isSuper">用户管理</el-menu-item>
+            <el-menu-item @click="systemConfig" router index="/system_config" v-if="isSuper===1&&isSuper">系统配置</el-menu-item>
           </el-menu>
           <div class="line"></div>
         </div>

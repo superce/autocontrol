@@ -48,12 +48,17 @@
         <el-button type="primary" @click="search">搜索</el-button>
       </div>
       <div class="margin">
-        <el-button slot="reference" type="primary" :loading="editLoading" @click="edit">编辑</el-button>
+        <el-button type="primary" :loading="editLoading" @click="edit">编辑</el-button>
+        <el-button type="primary" @click="CmdTask" v-if="isSuper === 1">CMD任务</el-button>
         <el-button type="primary" @click="group" v-if="isSuper !== 1">分组</el-button>
         <el-button type="primary" @click="removeControl" v-if="isSuper !== 1">从分组移除中控</el-button>
       </div>
     </div>
     <div class="control-box">
+      <!-- cmd任务弹窗 -->
+      <el-dialog :visible.sync="cmdDialog">
+        123
+      </el-dialog>
       <!-- 编辑 -->
       <el-dialog width="500px" :visible.sync="dialogEdit" :title="editGroup=='edit'?'修改中控配置':'创建分组'">
 			<!-- 4G拨号设置格式 -->
@@ -82,7 +87,6 @@
               </el-select>
             </el-form-item>
           </el-form>
-          <!-- <div v-show="(isSelectIp.length>1&&isSelectIp[1]=='2')"> -->
           <div v-show="site4g.mode !=='-1'&&site4g.mode!==''">
             <el-form label-width="150px" :model="site4g" :rules="rules" ref="ruleForm">
               <!-- <h3>4G拨号设置格式</h3> -->
@@ -112,14 +116,6 @@
               <el-form-item label="密码" v-if="isSuper===1" class="input-item" prop="password">
                 <el-input v-model="site4g.password"></el-input>
               </el-form-item>
-              
-              <!-- <el-form-item label="模式" prop="mode">
-                <el-select v-model="site4g.mode" placeholder="模式" @change="changeModle">
-                  <el-option value="-1" label="停用"></el-option>
-                  <el-option value="0" label="间隔时间"></el-option>
-                  <el-option value="1" label="间隔次数"></el-option>
-                </el-select>
-              </el-form-item> -->
               <el-form-item :label="editModle || '间隔'" class="input-item" prop="interval">
                 <el-input v-model="site4g.interval" :disabled="site4g.mode==='-1'"></el-input>
               </el-form-item>
@@ -203,7 +199,7 @@
 </template>
 
 <script>
-import {apiGetControlList,apiGetZkUserList,apiEditZkUpdate,setControlGroup,dissControlGroup,removeContorlItem} from "@/request/api";
+import {apiGetControlList,apiGetZkUserList,apiEditZkUpdate,setControlGroup,dissControlGroup,removeContorlItem,apiGetAddCmdTask} from "@/request/api";
 import { getLocal } from "@/utils/storage";
 import { dateFormat } from "@/utils/common";
 import willTask from '@/components/willTask'
@@ -284,7 +280,8 @@ export default {
       wCount:'', // 窗口数量
       isShow4G:false, // 是否多选中控4g配置
       remark:'',//备注
-      editLoading:false // 编辑按钮的状态||保存按钮
+      editLoading:false, // 编辑按钮的状态||保存按钮
+      cmdDialog:false //cmd弹窗
     };
   },
   created() {
@@ -299,6 +296,10 @@ export default {
     }
   },
   methods: {
+    // CMD任务
+    CmdTask(){
+      this.cmdDialog = true
+    },
     // 解散分组
     dissGroup(id){
       this.$confirm('确认解散分组?', '提示', {
@@ -382,14 +383,6 @@ export default {
     changeIptype(val){
       console.log(val)
     },
-    // 选择ip模式
-    // changeIp(val){
-    //   console.log(val)
-    //   this.isShow4G=false
-    //   if(val.length>=2&&this.editIds.length>1){
-    //     this.isShow4G=true
-    //   }
-    // },
     edit() {
       this.editGroup = 'edit'
       //点编辑按钮之前判断有没有选择中控
@@ -403,8 +396,6 @@ export default {
             result = true;
             this.editIds.push(item.id);
             copySite4g.push(item.g4)
-            // if(item.g4index===1){  //g4index 0:不换ip 1：默认配置  2：自选配置
-            //   g4Index = true
             // }
             if(item.g4){
               let mode = JSON.parse(item.g4)
@@ -452,18 +443,12 @@ export default {
               }
             if(g4Index){
               console.log('不换IP',g4Index) //g4Index 为true  不换ip
-              // this.isSelectIp='1'
               this.site4g.mode='-1'
             }else{
               console.log('换IP')
-              //this.isSelectIp='2'
             }
           }else{
             this.site4g.mode='-1'
-            // if(g4Index){
-            //   console.log('不换IP',g4Index) //g4Index 为true  不换ip
-            //   // this.isSelectIp='1'
-            // }
           }
         }else{
           this.remark=''
@@ -547,27 +532,17 @@ export default {
       let site4g = this.site4g;
       let json4g = JSON.stringify(site4g);
       params.json4g=json4g
-      console.log('123')
-      console.log(params.json4g.mode)
       if(this.site4g.mode==='-1'){ 
         this.saveEditApi(params)
       }else{ // 换IP
-        // if(this.isSelectIp.length>1&&this.isSelectIp[1]==1){ //默认配置
-        //   params.settingtype = Number(this.isSelectIp[1])
-        //   console.log(params.settingtype)
-        //   this.saveEditApi(params)
-        // }
-        // if(this.isSelectIp.length>1&&this.isSelectIp[1]==2){ //自选配置
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              // params.settingtype = Number(this.isSelectIp[1])
               this.saveEditApi(params)
             } else {
               console.log('error submit!!');
               return false;
             }
           });
-        // }
       }
     },
     // 保存api
@@ -579,7 +554,6 @@ export default {
       if(modeType.mode==='-1'){
         type = '1'
       }
-      //this.isSelectIp=Number(this.isSelectIp[0])
       apiEditZkUpdate({
         userid: this.userId,
         ids: this.editIds,
@@ -589,7 +563,6 @@ export default {
         w_count:p.w_count,
         status:p.status,
         remark:this.remark
-        // settingtype:p.settingtype
       }).then(res => {
         if(res.data.state === 'error'){
           this.$message.error(res.data.msg)
@@ -841,17 +814,6 @@ export default {
     dialogTableVisible(val){
       if(!val) this.bigImg = ''
     },
-    // site4g(val){
-    //   // 监控选择的模式
-    //   switch (val.mode) {
-    //     case "-1":
-    //       return this.editModle = '停用'
-    //     case "0":
-    //       return (this.editModle = "间隔时间");
-    //     case "1":
-    //       return (this.editModle = "间隔次数");
-    //   }
-    // }
   },
   filters: {
     netState(state) {
