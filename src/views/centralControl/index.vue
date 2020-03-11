@@ -88,6 +88,10 @@
             <el-form-item label="窗口数量" class="input-item">
               <el-input v-model="wCount"></el-input>
             </el-form-item>
+            <el-form-item label="是否是测试机">
+              <el-radio v-model="isTestRadio" label="0">是</el-radio>
+              <el-radio v-model="isTestRadio" label="1">否</el-radio>
+            </el-form-item>
             <el-form-item v-if="isSuper===1" label="备注" class="input-item">
               <el-input v-model="remark"></el-input>
             </el-form-item>
@@ -160,7 +164,7 @@
               <div v-for="(item,index) in items.itemList" :key="index+'item'" class="text item control" :class="item.isSelect?'is-select':'no-select'">
                 <el-checkbox  v-model="item.isSelect" class="select-checkbox"></el-checkbox>
                 <div class="left">
-                  <img :src="` http://api.okaymw.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
+                  <img :src="`http://api.okaymw.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
                   <p v-if="isSecondsFormat(item)" :class="item.net_state==0?'normal':'abnormal'">网络{{item.net_state | netState}}</p>
                   <p v-else class="error-nomal">网络--</p>
                   <div class="left-name">
@@ -304,7 +308,8 @@ export default {
       adminNameId:'', //选择的任务名称
       CmdLoading:false,
       pageIndex:1, // 命令任务页数
-      total:1
+      total:1,
+      isTestRadio:'0' // 是否是测试机
     };
   },
   created() {
@@ -645,6 +650,7 @@ export default {
       if(modeType.mode==='-1'){
         type = '1'
       }
+      let istest = Number(this.isTestRadio)
       apiEditZkUpdate({
         userid: this.userId,
         ids: this.editIds,
@@ -653,7 +659,8 @@ export default {
         name:p.name,
         w_count:p.w_count,
         status:p.status,
-        remark:this.remark
+        remark:this.remark,
+        istest:istest
       }).then(res => {
         if(res.data.state === 'error'){
           this.$message.error(res.data.msg)
