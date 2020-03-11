@@ -81,7 +81,7 @@ export const apiGetRemark = p => get('/api/zk/partinfo',p)
 export const apiGetAddCmdTask = p => post('/api/addcmdtask',p)
 
 // 命令任务
-export const apiGetCmdTaskList = p => post('/api/cmdtask/list')
+export const apiGetCmdTaskList = p => post('/api/cmdtask/list',p)
 
 // 命令列表
 export const apiGetCmdList = p => post('/api/cmd/list',p)

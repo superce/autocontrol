@@ -53,7 +53,7 @@ export default {
 </script>
 <style scoped>
   .system{margin-top: 60px;}
-  .system .tac{position: fixed;left: 0;width: min-content;background: rgb(84, 92, 100)}
+  .system .tac{position: fixed;left: 0;top:60px;width: min-content;background: rgb(84, 92, 100)}
   .system .site-content{margin-left: 110px}
   .system .tac .el-col-24{width:101%!important}
 </style>

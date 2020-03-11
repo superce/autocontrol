@@ -17,7 +17,7 @@ const service = axios.create({
     timeout: 10000 // request timeout
 });
 // 请求头
-service.defaults.headers.post['Content-Type'] = 'application/json';
+service.defaults.headers.post['Content-Type'] = 'application/json'//'application/json';
 service.defaults.headers.post['cache-control'] = 'no-cache';
 // 请求拦截器
 service.interceptors.request.use(
@@ -26,7 +26,7 @@ service.interceptors.request.use(
         if(mongoApi.includes(config.url)){
             config.baseURL = 'http://botapi.anyelse.com'
         }else{
-            config.baseURL = 'http://botdemoapi.anyelse.com' //'http://api.okaymw.com'
+            config.baseURL = 'http://api.okaymw.com' //'http://api.okaymw.com'http://botdemoapi.anyelse.com
         }
         let apiUrl = ['/api/mongo_queue_list','/api/zk/list','/api/queuetag/list']
         if(apiUrl.includes(config.url)){

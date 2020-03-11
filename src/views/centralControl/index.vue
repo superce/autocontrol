@@ -49,15 +49,27 @@
       </div>
       <div class="margin">
         <el-button type="primary" :loading="editLoading" @click="edit">编辑</el-button>
-        <el-button type="primary" @click="CmdTask" v-if="isSuper === 1">CMD任务</el-button>
+        <el-button type="primary" @click="CmdTask" v-if="isSuper === 1" :loading="CmdLoading">CMD任务</el-button>
         <el-button type="primary" @click="group" v-if="isSuper !== 1">分组</el-button>
         <el-button type="primary" @click="removeControl" v-if="isSuper !== 1">从分组移除中控</el-button>
       </div>
     </div>
     <div class="control-box">
       <!-- cmd任务弹窗 -->
-      <el-dialog :visible.sync="cmdDialog">
-        123
+      <el-dialog :visible.sync="cmdDialog" title='CMD任务列表' class="admin-dialog">
+        <div class='select'>
+          <el-select v-model="adminNameId" v-loadmore='loadMore' placeholder="请选择">
+            <el-option
+              v-for="item in adminList"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="cmdDialog = false">取消</el-button>
+          <el-button type="primary" :loading="editLoading" @click="confirmCmd">确定</el-button>
+        </div>
       </el-dialog>
       <!-- 编辑 -->
       <el-dialog width="500px" :visible.sync="dialogEdit" :title="editGroup=='edit'?'修改中控配置':'创建分组'">
@@ -147,7 +159,6 @@
             <div class="item-content">
               <div v-for="(item,index) in items.itemList" :key="index+'item'" class="text item control" :class="item.isSelect?'is-select':'no-select'">
                 <el-checkbox  v-model="item.isSelect" class="select-checkbox"></el-checkbox>
-                <!-- <div v-model="item.isSelect"></div> -->
                 <div class="left">
                   <img :src="` http://api.okaymw.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
                   <p v-if="isSecondsFormat(item)" :class="item.net_state==0?'normal':'abnormal'">网络{{item.net_state | netState}}</p>
@@ -162,8 +173,6 @@
                   <p><span>队列标识:</span>{{item.tag_name}}<i v-if="item.tag_name">/</i>{{item.queue_title}}</p>
                   <p v-if="isSuper == 1"><span>备注:</span>{{item.remark||'--'}}</p>
                   <p v-if="isSuper == 1"><span>版本号:</span>{{item.version||'--'}}</p>
-                  <!-- <p><span>使用人:</span>{{item.username || '无'}}</p>
-                  <p><span>心跳时间:</span><span :class="item.isSeconds?'':'seconds-15'">{{dateFormat(item.lastcore,item.id)}}</span></p> -->
                   <p><span>窗口数量:</span>{{item.w_count}}</p>
                   <p>
                     <span>状态:</span><em :class="item.status=='0'?'normal':'abnormal'">{{item.status | controlStatus}}</em>
@@ -199,7 +208,16 @@
 </template>
 
 <script>
-import {apiGetControlList,apiGetZkUserList,apiEditZkUpdate,setControlGroup,dissControlGroup,removeContorlItem,apiGetAddCmdTask} from "@/request/api";
+import {
+  apiGetControlList,
+  apiGetZkUserList,
+  apiEditZkUpdate,
+  setControlGroup,
+  dissControlGroup,
+  removeContorlItem,
+  apiGetAddCmdTask,
+  apiGetCmdList
+} from "@/request/api";
 import { getLocal } from "@/utils/storage";
 import { dateFormat } from "@/utils/common";
 import willTask from '@/components/willTask'
@@ -281,7 +299,12 @@ export default {
       isShow4G:false, // 是否多选中控4g配置
       remark:'',//备注
       editLoading:false, // 编辑按钮的状态||保存按钮
-      cmdDialog:false //cmd弹窗
+      cmdDialog:false, //cmd弹窗
+      adminList:[], // 命令任务列表
+      adminNameId:'', //选择的任务名称
+      CmdLoading:false,
+      pageIndex:1, // 命令任务页数
+      total:1
     };
   },
   created() {
@@ -295,10 +318,78 @@ export default {
       return this.$store.state.isSuper || getLocal('isSuper') || ''
     }
   },
+  directives: {
+    loadmore:{
+      bind(el, binding) {
+        // 获取element-ui定义好的scroll盒子
+        const SELECTWRAP_DOM = el.querySelector('.el-select-dropdown .el-select-dropdown__wrap')
+        SELECTWRAP_DOM.addEventListener('scroll', function () {
+          const CONDITION = this.scrollHeight - this.scrollTop <= this.clientHeight+50
+          if (CONDITION) {
+            binding.value()
+          }
+        })
+      }
+    }
+  },
   methods: {
     // CMD任务
     CmdTask(){
+      let result = false
+      this.list.forEach(items => {
+        items.itemList.forEach(item =>{
+          if (item.isSelect) {
+            result = true
+            this.editIds.push(item.id)
+          }
+        })
+      })
+      if(!result){
+        this.$message.error('请选择中控')
+        return false
+      }
+      this.CmdLoading = true
+      this.pageIndex = 1
+      this.getCmdList(1)
       this.cmdDialog = true
+    },
+    loadMore(){
+      this.pageIndex++
+      if(this.pageIndex<=this.total){
+        this.getCmdList(this.pageIndex)
+      }
+    },
+    getCmdList(i){
+      apiGetCmdList({
+        pageindex:i,
+        pagesize:10,
+        name:'',
+        startdate:'',
+        enddate:''
+      }).then(res =>{
+        this.adminList=this.adminList.concat(res.data) 
+        this.total = res.total
+      }).catch(err =>{
+
+      }).finally(()=>{
+        this.CmdLoading = false
+      })
+    },
+    // 确定选择命令
+    confirmCmd(){
+      apiGetAddCmdTask({
+        ids:this.editIds,
+        cmd_id:this.adminNameId
+      }).then(res =>{
+        if(res.data.state){
+          this.$message.success(res.data.msg)
+          this.cmdDialog = false
+        }else{
+          this.$message.error(res.data.msg)
+        }
+      }).catch(err =>{
+        this.$message.error(res.data.msg)
+      })
     },
     // 解散分组
     dissGroup(id){
@@ -811,6 +902,17 @@ export default {
         }
       }
     },
+    cmdDialog(r){
+      if(!r){
+        this.adminNameId = ''
+        this.editIds=[]
+        this.list.forEach(items => {
+          items.itemList.forEach(item =>{
+            item.isSelect = false;
+          })
+        });
+      }
+    },
     dialogTableVisible(val){
       if(!val) this.bigImg = ''
     },
@@ -942,4 +1044,5 @@ export default {
 .seconds-15{color:rgba(235, 5, 5, 0.698)}
 .error-nomal{background: #ccc}
 .pages{text-align: center;margin-top: 10px;}
+.control-box .select{text-align: center;}
 </style>
