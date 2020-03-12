@@ -521,6 +521,7 @@ export default {
                 this.isEditName = item.name
                 this.isSelectStatus = item.status
                 this.wCount = item.w_count
+                this.isTestRadio = item.istest.toString()
               }
             })
           })
@@ -548,6 +549,7 @@ export default {
           }
         }else{
           this.remark=''
+          this.isTestRadio = '0'
           // 多选中控的时候,取数据第一条不为空的配置
           for(var i = 0;i<copySite4g.length;i++){
             if(copySite4g[i]){
@@ -561,7 +563,8 @@ export default {
                   username: a.username,
                   password: a.password,
                   interval: a.interval,
-                  mode: a.mode
+                  mode: a.mode,
+                  iptype:a.iptype
                 }
                 break;
               }
@@ -626,9 +629,20 @@ export default {
       }
       // 不换IP
       let site4g = this.site4g;
-      let json4g = JSON.stringify(site4g);
+      if(!site4g.iptype){
+        site4g.iptype = '6'
+      }
+      let site4gNumber = {
+        con_type: Number(site4g.con_type),
+        username: site4g.username,
+        password: site4g.password,
+        interval: Number(site4g.interval),
+        mode: Number(site4g.mode),
+        iptype:Number(site4g.iptype),
+      }
+      let json4g = JSON.stringify(site4gNumber);
       params.json4g=json4g
-      if(this.site4g.mode==='-1'){ 
+      if(this.site4g.mode=='-1'){ 
         this.saveEditApi(params)
       }else{ // 换IP
           this.$refs[formName].validate((valid) => {
