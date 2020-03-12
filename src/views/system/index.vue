@@ -5,7 +5,6 @@
           <el-menu
             :default-active="defaultActive"
             class="el-menu-vertical-demo"
-            background-color="#545c64"
             text-color="#fff"
             >
             <el-menu-item index="admin" @click="toAdmin">
@@ -53,7 +52,10 @@ export default {
 </script>
 <style scoped>
   .system{margin-top: 60px;}
-  .system .tac{position: fixed;left: 0;top:60px;width: min-content;background: rgb(84, 92, 100)}
+  .system .tac{position: fixed;left: 0;top:60px;width: min-content;box-shadow: 0 0 4px #999;}
   .system .site-content{margin-left: 110px}
   .system .tac .el-col-24{width:101%!important}
+  .el-menu{background: none;border: none;}
+  .el-menu li span{color:#409eff}
+  .el-menu-item.is-active{background: rgb(179, 216, 255);}
 </style>
