@@ -165,7 +165,7 @@
               <div v-for="(item,index) in items.itemList" :key="index+'item'" class="text item control" :class="item.isSelect?'is-select':'no-select'">
                 <el-checkbox  v-model="item.isSelect" class="select-checkbox"></el-checkbox>
                 <div class="left">
-                  <img :src="`http://botapi.anyelse.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
+                  <img :src="`http://api.okaymw.com/api/screen?uid=${item.uid}&tag=small`|defaultImg('contorl')" @click="enlarge(item.uid)" />
                   <p v-if="isSecondsFormat(item)" :class="item.net_state==0?'normal':'abnormal'">网络{{item.net_state | netState}}</p>
                   <p v-else class="error-nomal">网络--</p>
                   <div class="left-name">
@@ -463,7 +463,7 @@ export default {
     },
     enlarge(img) {
       this.dialogTableVisible = true
-      this.bigImg = `http://botapi.anyelse.com/api/screen?uid=${img}`
+      this.bigImg = `http://api.okaymw.com/api/screen?uid=${img}`
     },
     changeModle(val) {
       // 监控选择的模式

@@ -22,12 +22,12 @@ service.defaults.headers.post['cache-control'] = 'no-cache';
 // 请求拦截器
 service.interceptors.request.use(
     config => {
-        // let mongoApi = ['/api/mongo_queue_list','api/mongo_taskinfo','api/check_lock_state','api/get_will_do_task','api/delete_will_do_task','api/delete_no_get_task','api/gettask','api/update_task_state']
-        // if(mongoApi.includes(config.url)){
-        //     config.baseURL = 'http://botapi.anyelse.com'
-        // }else{
-        //     config.baseURL = 'http://api.okaymw.com' //'http://api.okaymw.com'http://botdemoapi.anyelse.com
-        // }
+        let mongoApi = ['/api/mongo_queue_list','api/mongo_taskinfo','api/check_lock_state','api/get_will_do_task','api/delete_will_do_task','api/delete_no_get_task','api/gettask','api/update_task_state']
+        if(mongoApi.includes(config.url)){
+            config.baseURL = 'http://botapi.anyelse.com'
+        }else{
+            config.baseURL = 'http://api.okaymw.com' //'http://api.okaymw.com'http://botdemoapi.anyelse.com
+        }
         let apiUrl = ['/api/mongo_queue_list','/api/zk/list','/api/queuetag/list']
         if(apiUrl.includes(config.url)){
             window.scrollTo(0, 0)
