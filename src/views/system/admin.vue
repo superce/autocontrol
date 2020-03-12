@@ -27,7 +27,7 @@
                 <el-input v-model="addAdmin.name" autocomplete="on"></el-input>
             </el-form-item>
             <el-form-item prop="cmd_text" label="命令内容" label-width="120">
-                <el-input v-model="addAdmin.cmd_text" autocomplete="on"></el-input>
+                <el-input type='textarea' v-model="addAdmin.cmd_text" autocomplete="on"></el-input>
             </el-form-item>
             <el-form-item label="命令说明" label-width="120" class="select">
                 <el-input v-model="addAdmin.remark" autocomplete="on"></el-input>
