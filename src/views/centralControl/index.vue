@@ -108,6 +108,7 @@
               <!-- <h3>4G拨号设置格式</h3> -->
               <el-form-item label="修改运营商" v-if="isSuper===1" class="input-item">
                 <el-select v-model="site4g.iptype" @change="changeIptype" placeholder="请选择运营商">
+                  <el-option value="9" label="请选择运营商"></el-option>
                   <el-option value="0" label="台湾中华电信"></el-option>
                   <el-option value="1" label="香港移动大陆卡"></el-option>
                   <el-option value="2" label="香港csl"></el-option>
@@ -277,7 +278,7 @@ export default {
         password: "",
         interval: "",
         mode: "",
-        iptype:''
+        iptype:'9'
       },
       editModle: "", // 选择模式
       con_typeId: "",
@@ -529,7 +530,9 @@ export default {
           if(copySite4g.length>0&&copySite4g[0]){
             let copySite4g_1 = JSON.parse(copySite4g[0])
               copySite4g_1.mode = copySite4g_1.mode.toString()
-              
+              copySite4g_1.con_type = copySite4g_1.con_type.toString()
+              copySite4g_1.interval = copySite4g_1.interval.toString()
+              copySite4g_1.iptype = copySite4g_1.iptype.toString()
               this.site4g = {
                 con_type: copySite4g_1.con_type,
                 username: copySite4g_1.username,
@@ -630,7 +633,7 @@ export default {
       // 不换IP
       let site4g = this.site4g;
       if(!site4g.iptype){
-        site4g.iptype = '6'
+        site4g.iptype = '9'
       }
       let site4gNumber = {
         con_type: Number(site4g.con_type),
@@ -661,7 +664,7 @@ export default {
       let type = '2'
       let modeType = p.json4g
       modeType = JSON.parse(modeType)
-      if(modeType.mode==='-1'){
+      if(modeType.mode===-1){
         type = '1'
       }
       let istest = Number(this.isTestRadio)
