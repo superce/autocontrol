@@ -89,8 +89,8 @@
               <el-input v-model="wCount"></el-input>
             </el-form-item>
             <el-form-item label="是否是测试机">
-              <el-radio v-model="isTestRadio" label="0">是</el-radio>
-              <el-radio v-model="isTestRadio" label="1">否</el-radio>
+              <el-radio v-model="isTestRadio" label="1">是</el-radio>
+              <el-radio v-model="isTestRadio" label="0">否</el-radio>
             </el-form-item>
             <el-form-item v-if="isSuper===1" label="备注" class="input-item">
               <el-input v-model="remark"></el-input>
@@ -310,7 +310,7 @@ export default {
       CmdLoading:false,
       pageIndex:1, // 命令任务页数
       total:1,
-      isTestRadio:'0' // 是否是测试机
+      isTestRadio:'0' // 是否是测试机 1:测试机
     };
   },
   created() {
