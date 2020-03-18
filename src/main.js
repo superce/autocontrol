@@ -7,6 +7,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import filter from './utils/filters'
 import { getLocal } from './utils/storage'
+import 'default-passive-events'
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false

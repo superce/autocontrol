@@ -34,17 +34,24 @@
           </el-select>
         </div>
         <div>
+          <span>显示方式:</span>
+          <el-select v-model="displayMode" placeholder="请选择">
+            <el-option label="网格" value="1"></el-option>
+            <el-option label="列表" value="2"></el-option>
+          </el-select>
+        </div>
+        <!-- <div>
           <span>使用人:</span>
           <el-input v-model="params.userName" placeholder="请输入内容"></el-input>
-        </div>
-        <div class="block">
+        </div> -->
+        <!-- <div class="block">
           <span class="demonstration">开始时间</span>
           <el-date-picker v-model="params.start_date" type="date" placeholder="选择日期"></el-date-picker>
         </div>
         <div class="block">
           <span class="demonstration">结束时间</span>
           <el-date-picker v-model="params.end_date" type="date" placeholder="选择日期"></el-date-picker>
-        </div>
+        </div> -->
         <el-button type="primary" @click="search">搜索</el-button>
       </div>
       <div class="margin">
@@ -62,7 +69,9 @@
             <el-option
               v-for="item in adminList"
               :label="item.name"
-              :value="item.id">
+              :value="item.id"
+              :key="item.name+'name'"
+              >
             </el-option>
           </el-select>
         </div>
@@ -154,8 +163,8 @@
           </el-form>
         </div>
       </el-dialog>
-      <!-- 列表 -->
-      <div :class="['el-row',{'super-admin':isSuper==1}]">
+      <!-- 网格显示 -->
+      <div v-show="displayMode==='1'" :class="['el-row',{'super-admin':isSuper==1}]">
           <el-card shadow="hover" class="box-card" v-for="(items,index) in list" :key="index">
             <div slot="header" class="clearfix">
               <span>{{items.title}}</span>
@@ -190,6 +199,61 @@
               </div>
             </div>
           </el-card>
+      </div>
+      <!-- 列表显示 -->
+      <div v-show="displayMode==='2'" class="el-mode-table">
+        <el-collapse v-model="activeNames" @change="handleChange">
+          <el-collapse-item v-for="(items,index) in list" :key="index+'item'" :name="index+1" >
+              <template slot="title">
+                  <div class="queue-title">
+                      {{items.title}}
+                      <el-button v-if="items.server_type_id !== 0&&isSuper!==1" type="primary" style="float: right; padding: 4px 10px" @click="dissGroup(items.server_type_id)">解散分组</el-button>
+                  </div>
+              </template>
+              <el-table ref="multipleTable" :data="items.itemList" stripe style="width: 100%" @selection-change="handleSelectionChange">
+                  <el-table-column type="selection" width="55"></el-table-column>
+                  <el-table-column prop="name" label="中控名称"></el-table-column>
+                  <el-table-column prop="tag_name" label="队列标识">
+                    <template slot-scope="{row}">
+                      {{row.tag_name}}<i v-if="row.tag_name"> / </i>{{row.queue_title}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column v-if="isSuper == 1" prop="" label="备注">
+                    <template slot-scope="{row}">
+                      {{row.remark||'--'}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column v-if="isSuper == 1" prop="remark" label="版本号" width="180">
+                    <template slot-scope="{row}">
+                      {{row.version||'--'}}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop='w_count' label="窗口数量" width="180"></el-table-column>
+                  <el-table-column label="网络状态" width="180">
+                    <template slot-scope="{row}">
+                      <el-tag v-if="isSecondsFormat(row)" :type="row.net_state==0?'success':'danger'" size='small'>
+                        网络{{row.net_state | netState}}
+                      </el-tag>
+                      <el-tag v-else type='info' size="small">网络--</el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="中控状态" width="180">
+                    <template slot-scope="{row}">
+                      <el-tag :type="row.status==0?'success':'danger'" size='small'>
+                        {{row.status|controlStatus}}
+                      </el-tag>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" prop="addtime">
+                      <template slot-scope="{row}">
+                          <el-button type="primary" size="mini" @click="toTagList(row)">积压</el-button>
+                          <el-button type="primary" size="mini" @click="toTaskList(row)">历史</el-button>
+                          <el-button type="primary" size="mini" @click="enlarge(row.uid)">查看错误截图</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+          </el-collapse-item>
+        </el-collapse>
       </div>
 	  <div class="big-img">
 		  <el-dialog width='1240px' :visible.sync="dialogTableVisible">
@@ -258,8 +322,8 @@ export default {
         netState:'',
         username: "",
         server_title: "",
-        start_date: "",
-        end_date: ""
+        // start_date: "",
+        // end_date: ""
       },
       status: [
         { name: "全部", id: "" },
@@ -310,7 +374,9 @@ export default {
       CmdLoading:false,
       pageIndex:1, // 命令任务页数
       total:1,
-      isTestRadio:'0' // 是否是测试机 1:测试机
+      isTestRadio:'0', // 是否是测试机 1:测试机
+      displayMode:'1', // 页面显示形式
+      activeNames:[] // 列表折叠
     };
   },
   created() {
@@ -339,6 +405,14 @@ export default {
     }
   },
   methods: {
+    handleChange(){
+
+    },
+    handleSelectionChange(val){
+      val.forEach(item =>{
+        item.isSelect = true
+      })
+    },
     // CMD任务
     CmdTask(){
       let result = false
@@ -497,18 +571,15 @@ export default {
             if(item.g4){
               let mode = JSON.parse(item.g4)
               if(mode.mode == -1){ //mode -1:不换ip
-                console.log('mode==-1')
                 g4Index = true
               }
             }else{
-              console.log('mode!==-1')
               g4Index = true
             }
           }
           
         })
       });
-      console.log(result)
       if (result) {
         // 不换ip
         // this.isSelectIp=['1']   
@@ -693,18 +764,18 @@ export default {
         console.log(err);
       }).finally(()=>{this.editLoading=false});
     },
-    startTime() {
-      if (this.params.start_date) {
-        let data = this.params.start_date;
-        return this.time(data);
-      }
-    },
-    endTime() {
-      if (this.params.end_date) {
-        let data = this.params.end_date;
-        return this.time(data);
-      }
-    },
+    // startTime() {
+    //   if (this.params.start_date) {
+    //     let data = this.params.start_date;
+    //     return this.time(data);
+    //   }
+    // },
+    // endTime() {
+    //   if (this.params.end_date) {
+    //     let data = this.params.end_date;
+    //     return this.time(data);
+    //   }
+    // },
     time(data) {
       if (data) {
         let year = data.getFullYear();
@@ -722,21 +793,21 @@ export default {
     },
     // 获取列表
     getList() {
-      let start = this.startTime();
-      let end = this.endTime();
-      if (end < start) {
-        this.$message.error("开始时间不能大于结束时间");
-        return false;
-      }
-      if (end && !start) {
-        this.$message.error("请选择开始时间");
-        return false;
-      }
-      if (start && !end) {
-        this.$message.error("请选择结束时间");
-        return false;
-      }
-      this.getControlList(start, end, this.currentPage);
+      // let start = this.startTime();
+      // let end = this.endTime();
+      // if (end < start) {
+      //   this.$message.error("开始时间不能大于结束时间");
+      //   return false;
+      // }
+      // if (end && !start) {
+      //   this.$message.error("请选择开始时间");
+      //   return false;
+      // }
+      // if (start && !end) {
+      //   this.$message.error("请选择结束时间");
+      //   return false;
+      // }
+      this.getControlList('', '', this.currentPage);
     },
     // 获取列表api
     getControlList(s, e, index) {
@@ -766,6 +837,7 @@ export default {
         let newData = []
         let data1 = []
         let data2 = []
+        let index = 0
         res.data.forEach(item =>{
           if(item.userid===0){
             data1 = data1.concat(item)
@@ -784,6 +856,8 @@ export default {
             if(p){
               p.itemList.push(item)
             }else{
+              index++
+              this.activeNames.push(index)
               let a= ''
               if(item.server_type_id === 0){
                 a='未分组'
@@ -805,6 +879,8 @@ export default {
             if(p){
               p.itemList.push(item)
             }else{
+              index++
+              this.activeNames.push(index)
               let a= ''
               if(item.userid === 0){
                 a='暂无使用人'
@@ -904,16 +980,22 @@ export default {
   watch: {
     dialogEdit(val){
       if(!val){
-        this.list.forEach(items => {
+        let clearIndex = 0
+        this.list.forEach((items,index) => {
           items.itemList.forEach(item =>{
+            if(item.isSelect){
+              clearIndex = index
+            }
             item.isSelect = false;
           })
         });
+        if(this.displayMode==='2'){
+          this.$refs.multipleTable[clearIndex].clearSelection();
+        }
         this.editIds = [];
         this.groupName = ''
         this.isEditName=''
         this.isSelectStatus = ''
-        // this.isSelectIp = ''
         this.wCount=''
         this.isShow4G=false
         this.site4g = {
@@ -930,11 +1012,19 @@ export default {
       if(!r){
         this.adminNameId = ''
         this.editIds=[]
-        this.list.forEach(items => {
+        this.adminList = []
+        let clearIndex = 0
+        this.list.forEach((items,index) => {
           items.itemList.forEach(item =>{
+            if(item.isSelect){
+              clearIndex = index
+            }
             item.isSelect = false;
           })
         });
+        if(this.displayMode==='2'){
+          this.$refs.multipleTable[clearIndex].clearSelection();
+        }
       }
     },
     dialogTableVisible(val){
@@ -1069,4 +1159,5 @@ export default {
 .error-nomal{background: #ccc}
 .pages{text-align: center;margin-top: 10px;}
 .control-box .select{text-align: center;}
+.el-mode-table{position: relative;}
 </style>

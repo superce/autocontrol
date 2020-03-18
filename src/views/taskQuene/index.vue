@@ -435,7 +435,6 @@ export default {
 </script>
 <style scoped>
 .create-group{margin: 10px 10px 10px 0;}
-.queue-title{width:100%;display: flex;justify-content: space-between;align-items: center}
 .will-task .delete-will-do{margin-top: 10px;}
 .control-box .el-row .span-id{color: #000}
 </style>
