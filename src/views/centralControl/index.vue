@@ -212,23 +212,22 @@
               </template>
               <el-table ref="multipleTable" :data="items.itemList" stripe style="width: 100%" @selection-change="handleSelectionChange">
                   <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="name" label="中控名称"></el-table-column>
+                  <el-table-column prop="name" label="中控名称">
+                    <template slot-scope="{row}">
+                      {{row.name}}<span v-if="row.remark&&isSuper === 1" class="remark">({{row.remark}})</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="tag_name" label="队列标识">
                     <template slot-scope="{row}">
                       {{row.tag_name}}<i v-if="row.tag_name"> / </i>{{row.queue_title}}
                     </template>
                   </el-table-column>
-                  <el-table-column v-if="isSuper == 1" prop="" label="备注">
-                    <template slot-scope="{row}">
-                      {{row.remark||'--'}}
-                    </template>
-                  </el-table-column>
+                  <el-table-column prop='w_count' label="窗口数量" width="180"></el-table-column>
                   <el-table-column v-if="isSuper == 1" prop="remark" label="版本号" width="180">
                     <template slot-scope="{row}">
                       {{row.version||'--'}}
                     </template>
                   </el-table-column>
-                  <el-table-column prop='w_count' label="窗口数量" width="180"></el-table-column>
                   <el-table-column label="网络状态" width="180">
                     <template slot-scope="{row}">
                       <el-tag v-if="isSecondsFormat(row)" :type="row.net_state==0?'success':'danger'" size='small'>
@@ -248,7 +247,7 @@
                       <template slot-scope="{row}">
                           <el-button type="primary" size="mini" @click="toTagList(row)">积压</el-button>
                           <el-button type="primary" size="mini" @click="toTaskList(row)">历史</el-button>
-                          <el-button type="primary" size="mini" @click="enlarge(row.uid)">查看错误截图</el-button>
+                          <el-button type="primary" size="mini" @click="enlarge(row.uid)">查看截图</el-button>
                       </template>
                   </el-table-column>
               </el-table>

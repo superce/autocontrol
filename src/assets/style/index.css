@@ -44,3 +44,4 @@ ul.pages li{width: 30px;height: 30px;margin: 0 5px;background: #409EFF;line-heig
 .central-control .control-box .el-dialog__body {margin-bottom: 100px;}
 .el-select-dropdown__list{max-height: 170px;}
 .queue-title{width:100%;display: flex;justify-content: space-between;align-items: center}
+.el-mode-table .remark{color:#999}
