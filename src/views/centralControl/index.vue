@@ -930,6 +930,7 @@ export default {
       if(!r){
         this.adminNameId = ''
         this.editIds=[]
+        this.adminList = []
         this.list.forEach(items => {
           items.itemList.forEach(item =>{
             item.isSelect = false;
