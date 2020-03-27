@@ -45,3 +45,12 @@ ul.pages li{width: 30px;height: 30px;margin: 0 5px;background: #409EFF;line-heig
 .el-select-dropdown__list{max-height: 170px;}
 .queue-title{width:100%;display: flex;justify-content: space-between;align-items: center}
 .el-mode-table .remark{color:#999}
+.task-config-button .el-form-item__content{display: flex;flex-direction: column;}
+input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+    }
+    input[type="number"]{
+        -moz-appearance: textfield;
+    }
+.pagination-page{text-align: center;margin-top: 10px;}

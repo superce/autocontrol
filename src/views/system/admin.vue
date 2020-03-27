@@ -138,6 +138,7 @@ export default {
         enddate:endDate
       }).then(res =>{
         this.adminList = res.data
+        this.pages = res.total
       }).catch(err =>{
 
       }).finally(()=>{

@@ -91,3 +91,12 @@ export const apiSaveCmd = p => post('/api/cmd/save',p)
 
 //删除命令
 export const apiDeleteCmd = p => post('/api/cmd/delete',p)
+
+// 任务配置列表
+export const apiTaskConfigList = p =>post('/api/taskrule/list',p)
+
+// 新增任务配置
+export const apiSaveTaskConfig = p =>post('/api/taskrule/save',p)
+
+// 删除任务配置
+export const apiDeleteTaskConfig = p =>post('/api/taskrule/delete',p)

@@ -49,7 +49,13 @@ const routes = [
     path: '/task_list',
     name: 'taskList',
     meta: {title: '任务列表'},
-    component: () => import('@/views/taskList/index.vue') //登录
+    component: () => import('@/views/taskList/index.vue') 
+  },
+  {
+    path: '/task_config',
+    name: 'taskConfig',
+    meta: {title: '任务配置'},
+    component: () => import('@/views/taskConfig/index.vue') 
   },
   {
     path: '/system_config',

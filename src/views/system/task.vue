@@ -149,5 +149,5 @@ export default {
 .admin .task-el-row{margin-top: 120px;}
 .admin.central-control{margin: 60px auto 0}
 .admin .fiexd-nav{left: 100px!important;}
-.pagination-page{text-align: center;margin-top: 10px;}
+/* .pagination-page{text-align: center;margin-top: 10px;} */
 </style>
