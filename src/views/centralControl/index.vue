@@ -35,7 +35,7 @@
         </div>
         <div>
           <span>显示方式:</span>
-          <el-select v-model="displayMode" placeholder="请选择">
+          <el-select v-model="displayMode" @change="getMode" placeholder="请选择">
             <el-option label="网格" value="1"></el-option>
             <el-option label="列表" value="2"></el-option>
           </el-select>
@@ -286,7 +286,7 @@ import {
   apiGetAddCmdTask,
   apiGetCmdList
 } from "@/request/api";
-import { getLocal } from "@/utils/storage";
+import { getLocal,setLocal } from "@/utils/storage";
 import { dateFormat } from "@/utils/common";
 import willTask from '@/components/willTask'
 export default {
@@ -380,6 +380,7 @@ export default {
   },
   created() {
     this.getList();
+    this.displayMode=this.showMode
   },
   computed: {
     userId() {
@@ -387,8 +388,16 @@ export default {
     },
     isSuper(){
       return this.$store.state.isSuper || getLocal('isSuper') || ''
+    },
+    // 页面显示方式
+    showMode(){
+      let mode = getLocal('mode')
+      mode = mode.toString()
+      mode = mode==='0'?'1':mode
+      return mode
     }
   },
+  // 自定义指令
   directives: {
     loadmore:{
       bind(el, binding) {
@@ -406,6 +415,11 @@ export default {
   methods: {
     handleChange(){
 
+    },
+    // 显示方式从缓存中取值
+    getMode(mode){
+      console.log(typeof mode)
+      setLocal('mode',mode)
     },
     handleSelectionChange(val){
       val.forEach(item =>{
