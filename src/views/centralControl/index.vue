@@ -391,7 +391,7 @@ export default {
     },
     // 页面显示方式
     showMode(){
-      let mode = getLocal('mode')
+      let mode = getLocal('mode')||0
       mode = mode.toString()
       mode = mode==='0'?'1':mode
       return mode
