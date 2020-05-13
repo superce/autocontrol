@@ -100,3 +100,6 @@ export const apiSaveTaskConfig = p =>post('/api/taskrule/save',p)
 
 // 删除任务配置
 export const apiDeleteTaskConfig = p =>post('/api/taskrule/delete',p)
+
+// 去最近中控使用时间
+export const apiGetZkUserTime = p =>post('/api/zk/usetime',p)

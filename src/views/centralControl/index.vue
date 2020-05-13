@@ -191,16 +191,17 @@
                   </div>
                 </div>
                 <div class="right">
-                  <p><span>中控名称:</span>{{item.name}}</p>
-                  <p><span>队列标识:</span>{{item.tag_name}}<i v-if="item.tag_name">/</i>{{item.queue_title}}</p>
-                  <p v-if="isSuper == 1"><span>备注:</span>{{item.remark||'--'}}</p>
-                  <p v-if="isSuper == 1"><span>版本号:</span>{{item.version||'--'}}</p>
+                  <p><span>中控名称：</span>{{item.name}}</p>
+                  <p><span>队列标识：</span>{{item.tag_name}}<i v-if="item.tag_name">/</i>{{item.queue_title}}</p>
+                  <p v-if="isSuper == 1"><span>备注：</span>{{item.remark||'--'}}</p>
+                  <p v-if="isSuper == 1"><span>版本号：</span>{{item.version||'--'}}</p>
                   <p><span>窗口数量:</span>{{item.w_count}}</p>
                   <p>
                     <span>状态:</span><em :class="item.status=='0'?'normal':'abnormal'">{{item.status | controlStatus}}</em>
                     <span class="btn-span">
                       <el-button type="primary" class="mini" @click='toTagList(item)'>积压</el-button>
                       <el-button type="primary" class="mini" @click="toTaskList(item)">历史</el-button>
+                      <el-button type="primary" class="mini" @click="getUseTime(item)">{{userTime(item)}}</el-button>
                     </span>
                   </p>
                 </div>
@@ -231,6 +232,11 @@
                     </template>
                   </el-table-column>
                   <el-table-column prop='w_count' label="窗口数量" width="180"></el-table-column>
+                  <el-table-column prop='use_time' label="使用率" width="180">
+                    <template slot-scope="{row}">
+                      {{userTime(row)}}
+                    </template>
+                  </el-table-column>
                   <el-table-column v-if="isSuper == 1" prop="remark" label="版本号" width="180">
                     <template slot-scope="{row}">
                       {{row.version||'--'}}
@@ -256,6 +262,7 @@
                           <el-button type="primary" size="mini" @click="toTagList(row)">积压</el-button>
                           <el-button type="primary" size="mini" @click="toTaskList(row)">历史</el-button>
                           <el-button type="primary" size="mini" @click="enlarge(row.uid)">查看截图</el-button>
+                          <el-button type="primary" size="mini" @click="getUseTime(row)">使用时间</el-button>
                       </template>
                   </el-table-column>
               </el-table>
@@ -269,6 +276,8 @@
 	  </div>
     <!-- 积压任务弹窗 -->
     <will-task ref="task"></will-task>
+    <!-- 使用时间 -->
+    <use-time ref="usetime"></use-time>
     <div class="pages">
       <el-pagination
         background
@@ -298,8 +307,9 @@ import {
 import { getLocal,setLocal } from "@/utils/storage";
 import { dateFormat } from "@/utils/common";
 import willTask from '@/components/willTask'
+import useTime from './useTime/index'
 export default {
-  components:{willTask},
+  components:{willTask,useTime},
   data() {
     return {
       rules: {
@@ -385,7 +395,7 @@ export default {
       isTestRadio:'0', // 是否是测试机 1:测试机
       displayMode:'1', // 页面显示形式
       activeNames:[], // 列表折叠
-      userNameList:[{id:0,name:'全部'}] // 中控用户分类列表
+      userNameList:[{id:0,name:'全部'}], // 中控用户分类列表
     };
   },
   created() {
@@ -426,6 +436,13 @@ export default {
   methods: {
     handleChange(){
 
+    },
+    userTime(item){
+      let percent = item.use_time/60/24*100
+      return Math.ceil(percent)+'%'
+    },
+    getUseTime(item){
+      this.$refs.usetime.getZkUserTime(item.id,item.name,item.remark||'--')
     },
     getUserList(){
         apiGetUserList({
@@ -1145,7 +1162,7 @@ export default {
   text-overflow:ellipsis;
   white-space: nowrap;
 }
-.central-control .control > .right p .btn-span{margin-left: 25px;}
+.central-control .control > .right p .btn-span{margin-left: 4px;}
 .central-control .el-row .item {
   position: relative;
 }
@@ -1165,10 +1182,10 @@ export default {
   font-size: 12px;
   line-height: 12px;
 }
-.central-control .el-row p span {
+/* .central-control .el-row p span {
   margin-right: 4px;
   padding: 1px 2px;
-}
+} */
 .central-control .data {
   text-align: center;
 }
