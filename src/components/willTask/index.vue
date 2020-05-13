@@ -24,7 +24,8 @@
             <el-button :type="WillTaskList.length===0?'info':'primary'" class="delete-will-do" :disabled="WillTaskList.length===0" @click="deleteWillDoTask">删除积压任务</el-button>
         </el-dialog>
     </div>
-</template>
+</template>   
+
 <script>
 import {apiGetQueneList,apiCreateQuene,setQueueGroup,diffQueueGroup,removeQueueItem,apiGetWillDoTask,apiDeleteWillDoTask} from '@/request/api'
 import { dateFormat } from "@/utils/common";

@@ -40,10 +40,18 @@
             <el-option label="列表" value="2"></el-option>
           </el-select>
         </div>
-        <!-- <div>
+        <div>
           <span>使用人:</span>
-          <el-input v-model="params.userName" placeholder="请输入内容"></el-input>
-        </div> -->
+          <!-- <el-input v-model="params.userName" placeholder="请输入内容"></el-input> -->
+          <el-select v-model="params.userName" placeholder="请选择">
+            <el-option
+              v-for="(item,index) in userNameList"
+              :key="index+'userNameList'"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
         <!-- <div class="block">
           <span class="demonstration">开始时间</span>
           <el-date-picker v-model="params.start_date" type="date" placeholder="选择日期"></el-date-picker>
@@ -284,7 +292,8 @@ import {
   dissControlGroup,
   removeContorlItem,
   apiGetAddCmdTask,
-  apiGetCmdList
+  apiGetCmdList,
+  apiGetUserList
 } from "@/request/api";
 import { getLocal,setLocal } from "@/utils/storage";
 import { dateFormat } from "@/utils/common";
@@ -319,7 +328,7 @@ export default {
         queue_title: "",
         status: "",
         netState:'',
-        username: "",
+        username: 0,
         server_title: "",
         // start_date: "",
         // end_date: ""
@@ -375,11 +384,13 @@ export default {
       total:1,
       isTestRadio:'0', // 是否是测试机 1:测试机
       displayMode:'1', // 页面显示形式
-      activeNames:[] // 列表折叠
+      activeNames:[], // 列表折叠
+      userNameList:[{id:0,name:'全部'}] // 中控用户分类列表
     };
   },
   created() {
     this.getList();
+    this.getUserList()
     this.displayMode=this.showMode
   },
   computed: {
@@ -415,6 +426,19 @@ export default {
   methods: {
     handleChange(){
 
+    },
+    getUserList(){
+        apiGetUserList({
+            id:this.userId,
+            page_index:1,
+            page_size:999,
+            name:''
+        }).then(res =>{
+          // res.data.unshift(obj)
+          this.userNameList = this.userNameList.concat(res.data)
+        }).catch(err =>{
+
+        })
     },
     // 显示方式从缓存中取值
     getMode(mode){
@@ -837,7 +861,7 @@ export default {
         page_size: 100,
         name: this.params.name,
         queue_title: this.params.queue_title,
-        username: this.params.userName,
+        user_id: this.params.userName,
         server_title: this.params.server_title,
         ip: this.params.ip,
         uid: this.params.uid,
