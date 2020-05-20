@@ -1,7 +1,7 @@
 <template>
     <div class="will-task">
         <el-dialog :visible.sync="isWillTask">
-            <el-table :data="tableData" stripe style="width: 100%">
+            <el-table :data="tableData" stripe style="width: 100%" max-height="500">
                 <el-table-column prop="name" label="中控名称">
                 </el-table-column>
                 <el-table-column prop="date" label="使用时间(小时)">
@@ -47,10 +47,10 @@ export default {
                     });
                     this.tableData=res.data.data
                 }else{
-                    this.$messege.error('')
+                    this.$message.error(res.data.msg)
                 }
             }).catch(e =>{
-                this.$messege.error(e)
+                this.$message.error(e)
             })
         },
         useTime(t){

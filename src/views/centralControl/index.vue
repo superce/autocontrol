@@ -442,6 +442,7 @@ export default {
       return Math.ceil(percent)+'%'
     },
     getUseTime(item){
+      console.log(item)
       this.$refs.usetime.getZkUserTime(item.id,item.name,item.remark||'--')
     },
     getUserList(){
