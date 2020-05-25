@@ -76,12 +76,12 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="jsLink" label="JavaScript"></el-table-column>
-                    <el-table-column prop="machineID" label="中控">
+                    <el-table-column prop="machineID" label="中控" width="200">
                         <template slot-scope="{row}">
                             {{row.controlName}}<span v-if="row.remark&&isSuper===1">({{row.remark}})</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="tagName" label="队列标签" width="150">
+                    <el-table-column prop="tagName" label="队列标签">
                         <template slot-scope="{row}">
                             <!-- {{contrastQunen()}} -->
                             {{filterTag(row.tag)}}

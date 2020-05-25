@@ -1,7 +1,7 @@
 import axios from 'axios';
 import router from '../router'
-import {Message} from 'element-ui';
-import {getLocal} from "../utils/storage/local";
+import { Message } from 'element-ui';
+import { getLocal } from "../utils/storage/local";
 // 环境切换
 let base_url = 'http://botdemoapi.anyelse.com'//'http://api.okaymw.com' //'http://api.okaymw.com/'
 if (process.env.NODE_ENV === 'production') {
@@ -22,31 +22,31 @@ service.defaults.headers.post['cache-control'] = 'no-cache';
 // 请求拦截器
 service.interceptors.request.use(
     config => {
-        let mongoApi = ['/api/mongo_queue_list','api/mongo_taskinfo','api/check_lock_state','api/get_will_do_task','api/delete_will_do_task','api/delete_no_get_task','api/gettask','api/update_task_state']
-        if(mongoApi.includes(config.url)){
+        let mongoApi = ['/api/mongo_queue_list', 'api/mongo_taskinfo', 'api/check_lock_state', 'api/get_will_do_task', 'api/delete_will_do_task', 'api/delete_no_get_task', 'api/gettask', 'api/update_task_state']
+        if (mongoApi.includes(config.url)) {
             config.baseURL = 'http://botapi.anyelse.com'
-        }else{
+        } else {
             config.baseURL = 'http://api.okaymw.com' //'http://api.okaymw.com'http://botdemoapi.anyelse.com
         }
-        let apiUrl = ['/api/mongo_queue_list','/api/zk/list','/api/queuetag/list']
-        if(apiUrl.includes(config.url)){
+        let apiUrl = ['/api/mongo_queue_list', '/api/zk/list', '/api/queuetag/list']
+        if (apiUrl.includes(config.url)) {
             window.scrollTo(0, 0)
         }
         // return new Promise(resolve => {
-            let userId = getLocal('userId')
-            let path = ['/login']
-            let _path = router.currentRoute.path
-            if(path.indexOf(_path) === -1){
-                if(userId){
-                    return config
-                }else{
-                   router.replace({
-                       path:'/login'
-                   })
-                }
-            }else{
+        let userId = getLocal('userId')
+        let path = ['/login']
+        let _path = router.currentRoute.path
+        if (path.indexOf(_path) === -1) {
+            if (userId) {
                 return config
+            } else {
+                router.replace({
+                    path: '/login'
+                })
             }
+        } else {
+            return config
+        }
         // });
     },
     error => {
@@ -65,8 +65,8 @@ service.interceptors.response.use(
     // 服务器状态码不是200的情况
     (error) => {
         Message({
-            message:error,
-            type:'error'
+            message: error,
+            type: 'error'
         })
         // return Promise.reject(error);
     }
