@@ -97,3 +97,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+.delete-will-do{
+    margin-top: 10px;
+}
+</style>
