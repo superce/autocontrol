@@ -6,6 +6,9 @@ export const postLogin = p =>post('/api/login',p)
 // 中控列表
 export const apiGetControlList = p =>post('/api/zk/list',p)
 
+// 分配中控
+export const apiDisControl = p => post('/zk/list',p)
+
 // 获取普通管理员、任务队列、服务器类型列表
 export const apiGetZkUserList = () =>get('/api/zk/together')
 

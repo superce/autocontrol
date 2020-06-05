@@ -17,7 +17,7 @@
     </el-dialog>
 </template>
 <script>
-import {apiDistrControl,apiGetControlList} from '@/request/api'
+import {apiDistrControl,apiDisControl} from '@/request/api'
 import {getLocal} from '@/utils/storage'
 export default {
     props:['rowId','type','taskId'],
@@ -130,24 +130,22 @@ export default {
         getControlList() {
             let _this = this;
             // this.index++
-            apiGetControlList({
+            apiDisControl({
                 userid: this.userId,
                 page_index: 1,
                 page_size: 9999,
             }).then(res => {
-                console.log(res)
                 let newData = []
                 res.data.forEach(item => {
                     if(_this.type === 'user'){
-                        if(item.userid === _this.rowId || !item.userid){
-                            if(item.userid !==0){
+                        if(item.user_id === _this.rowId || !item.user_id){
+                            if(item.user_id !==0){
                                 this.value.push(item.id)
                             }
                             newData.push(item)
                         }
                     }
                     if(_this.type === 'quene'){
-                        // console.log(res.data)
                         if(item.task_queue_id === _this.rowId||!item.task_queue_id){
                             if(item.task_queue_id !==0){
                                 this.value.push(item.id)
