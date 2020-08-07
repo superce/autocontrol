@@ -1,11 +1,11 @@
 <template>
     <div class="central-control">
         <div class="search">
-            <div class="account">
-                <span>账号:</span>
-                <el-input v-model="name" placeholder="请输入内容"></el-input>
+            <!-- <div class="account">
+                <span>队列ID:</span>
+                <el-input v-model="queueid" placeholder="请输入内容"></el-input>
             </div>
-            <el-button type="primary" @click="search">搜索</el-button>
+            <el-button type="primary" @click="search">搜索</el-button> -->
             <el-button type="primary" @click="NewAddUser">新增</el-button>
         </div>
         <div class="control-box">
@@ -79,7 +79,7 @@ export default {
     data(){
         return {
             alarmList:[],
-            name:'',
+            queueid:'',
             alarmConfig:{
                 id:'',
                 min_count:'',
@@ -162,9 +162,9 @@ export default {
                 console.log(err)
             })
         },
-        search(){
-            this.getAlarmList(1)
-        },
+        // search(){
+        //     this.getAlarmList(1)
+        // },
         changePage(index){
             this.getAlarmList(index)
         },
