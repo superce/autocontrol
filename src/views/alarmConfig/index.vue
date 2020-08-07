@@ -27,7 +27,7 @@
             </el-table>
             <!-- 编辑用户弹窗 -->
             <el-dialog :title="title" :visible.sync="dialogFormVisible">
-                <el-form :model="alarmConfig">
+                <el-form :model="alarmConfig" class="alarm">
                     <el-form-item label="队列" label-width="120">
                         <el-select v-model="alarmConfig.queueid" placeholder="请选择队列">
                             <el-option v-for="item in queueList" :label="item.title" :value="item.id" :key="item.id+'i'"></el-option>
@@ -200,7 +200,6 @@ export default {
 </script>
 <style scoped>
     .central-control .table{width: 900px;margin: 10px auto 0}
-    .control-box .select{display: flex;flex-direction: column;align-items: flex-start}
     .control-box .form-height{height: 680px;}
     .paging{
         text-align: center;

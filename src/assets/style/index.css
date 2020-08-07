@@ -54,3 +54,4 @@ input::-webkit-outer-spin-button,
         -moz-appearance: textfield;
     }
 .pagination-page{text-align: center;margin-top: 10px;}
+.alarm .el-select{width:100%}
