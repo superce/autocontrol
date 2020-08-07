@@ -58,6 +58,12 @@ const routes = [
     component: () => import('@/views/taskConfig/index.vue') 
   },
   {
+    path: '/alarm_config',
+    name: 'alarmConfig',
+    meta: {title: '报警配置'},
+    component: () => import('@/views/alarmConfig/index.vue') 
+  },
+  {
     path: '/system_config',
     name: 'systemConfig',
     meta: { title: '系统配置' },

@@ -106,3 +106,9 @@ export const apiDeleteTaskConfig = p =>post('/api/taskrule/delete',p)
 
 // 去最近中控使用时间
 export const apiGetZkUserTime = p =>post('/api/zk/usetime',p)
+
+// 报警配置查询
+export const apiAlarmConfigList = p =>post('/alarm/config/list',p)
+
+// 报警配置保存
+export const apiAlarmConfigSave = p =>post('/api/alarmconfig/save',p)

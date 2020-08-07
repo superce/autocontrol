@@ -14,7 +14,12 @@
                 </el-table-column>
                 <el-table-column prop="pwd" label="密码" width="180">
                 </el-table-column>
-                <el-table-column width="180" prop="role" label="等级">
+                <el-table-column prop="remark" label="备注">
+                </el-table-column>
+                <el-table-column width="180" label="等级">
+                    <template slot-scope="{row}">
+                        {{row | grades}}
+                    </template>
                 </el-table-column>
                 <el-table-column width="350" prop="token" label="token">
                 </el-table-column>
@@ -38,6 +43,9 @@
                     </el-form-item>
                     <el-form-item label="密码" label-width="120">
                         <el-input v-model="addUser.pwd" autocomplete="on"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注" label-width="120">
+                        <el-input v-model="addUser.remark" autocomplete="on"></el-input>
                     </el-form-item>
                     <el-form-item label="等级" label-width="120" class="select">
                         <el-select v-model="addUser.grade" placeholder="请选择等级">
@@ -76,7 +84,8 @@ export default {
             addUser:{
                 name:'',
                 pwd:'',
-                grade:''
+                grade:'',
+                remark:''
             },
             dialogFormVisible:false,
             title:'',
@@ -94,14 +103,19 @@ export default {
     watch:{
         dialogFormVisible(val){
             if(!val){
-                this.addUser = {}
+                this.addUser = {
+                    name:'',
+                    pwd:'',
+                    grade:'',
+                    remark:''
+                }
             }
         },
-        addUser(val){
-            // if(val.grade == '0') val.role = '普通'
-            // if(val.grade == '1') val.role = '管理'
-            console.log(val)
-        }
+        // addUser(val){
+        //     if(val.grade == '0') val.role = '普通'
+        //     if(val.grade == '1') val.role = '管理'
+        //     console.log(val)
+        // }
     },
     created(){
         this.getUserList('',1)
@@ -123,7 +137,8 @@ export default {
                 name:row.name,
                 pwd:row.pwd,
                 role:row.role,
-                grade:g
+                grade:g,
+                remark:row.remark
             }
         },
         // 保存编辑api
@@ -134,7 +149,8 @@ export default {
                 userid:row.id,
                 name:row.name,
                 pwd:row.pwd,
-                grade:row.grade
+                grade:row.grade,
+                remark:row.remark
             }).then(res =>{
                 if(res.data.state==='error'){
                     this.$message.error(res.data.msg)
@@ -182,11 +198,13 @@ export default {
     filters:{
         grades(g){
             let result = ''
-            switch(g){
+            switch(g.grade){
                 case 0:
                     result = '普通';
+                    break;
                 case 1:
                     result = '管理';
+                    break;
                 case 2:
                     result = '超級管理員'
             }

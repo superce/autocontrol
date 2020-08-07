@@ -9,6 +9,7 @@
             <el-menu-item @click="taskList" router index="/task_list">任务列表</el-menu-item>
             <el-menu-item @click="taskConfig" router index="/task_config">任务配置</el-menu-item>
             <el-menu-item @click="userMain" router index="/user_main" v-if="isSuper===1&&isSuper">用户管理</el-menu-item>
+            <el-menu-item  @click="alarmConfig" router index="/alarm_config">报警配置</el-menu-item>
             <el-menu-item @click="systemConfig" router index="/system_config" v-if="isSuper===1&&isSuper">系统配置</el-menu-item>
           </el-menu>
           <div class="line"></div>
@@ -84,6 +85,11 @@ import userImg from '../../assets/images/user.png'
       taskList(){
         this.$router.push({
           name:'taskList'
+        })
+      },
+      alarmConfig(){
+        this.$router.push({
+          name:'alarmConfig'
         })
       },
       taskConfig(){

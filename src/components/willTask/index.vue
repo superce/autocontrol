@@ -70,7 +70,7 @@ export default {
                 });
         },
         timeAdd0(m){
-            return m>10?m:'0'+m
+            return m>9?m:'0'+m
         },
         deleteApi(){
             let date = new Date()
