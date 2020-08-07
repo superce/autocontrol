@@ -1,11 +1,6 @@
 <template>
     <div class="central-control">
         <div class="search">
-            <!-- <div class="account">
-                <span>队列ID:</span>
-                <el-input v-model="queueid" placeholder="请输入内容"></el-input>
-            </div>
-            <el-button type="primary" @click="search">搜索</el-button> -->
             <el-button type="primary" @click="NewAddUser">新增</el-button>
         </div>
         <div class="control-box">
@@ -26,21 +21,23 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="{row}">
-                        <el-button @click="handleClick(row.ac)" type="text" size="small">编辑</el-button>
+                        <el-button @click="handleClick(row.ac)" :disabled="row.ac.queueid===0" type="primary" size="small">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <!-- 编辑用户弹窗 -->
             <el-dialog :title="title" :visible.sync="dialogFormVisible">
                 <el-form :model="alarmConfig">
-                    <el-form-item label="队列ID" label-width="120">
-                        <el-input v-model="alarmConfig.queueid" autocomplete="on"></el-input>
+                    <el-form-item label="队列" label-width="120">
+                        <el-select v-model="alarmConfig.queueid" placeholder="请选择队列">
+                            <el-option v-for="item in queueList" :label="item.title" :value="item.id" :key="item.id+'i'"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="间隔时长" label-width="120">
-                        <el-input v-model="alarmConfig.min_time" autocomplete="on"></el-input>
+                        <el-input v-model="alarmConfig.min_time" type="number" autocomplete="on"></el-input>
                     </el-form-item>
                     <el-form-item label="最小报警阈值" label-width="120">
-                        <el-input v-model="alarmConfig.min_count" autocomplete="on"></el-input>
+                        <el-input v-model="alarmConfig.min_count" type="number" autocomplete="on"></el-input>
                     </el-form-item>
                     <el-form-item label="钉钉token" label-width="120">
                         <el-input v-model="alarmConfig.ding_token" autocomplete="on"></el-input>
@@ -71,7 +68,7 @@
     </div>
 </template>
 <script>
-import {apiAlarmConfigList,apiAlarmConfigSave} from '@/request/api'
+import {apiAlarmConfigList,apiAlarmConfigSave,apiGetQueneList} from '@/request/api'
 import {getLocal} from '@/utils/storage'
 import {dateFormat} from '@/utils/common'
 export default {
@@ -93,6 +90,7 @@ export default {
             pages:0,
             currentPage:1,//当前页
             loading:false,
+            queueList:[] // 队列列表
         }
     },
     computed:{
@@ -116,12 +114,14 @@ export default {
     },
     created(){
         this.getAlarmList(1)
+        this.getQueueList() //获取队列列表
     },
     methods:{
         // 状态
         NewAddUser(){
             this.dialogFormVisible=true
             this.title = '添加配置'
+            this.getQueueList()
         },
         confirmSave(){
             this.userSave(this.alarmConfig)
@@ -141,18 +141,21 @@ export default {
         },
         // 保存编辑api
         userSave(row){
+            let id = row.id?row.id:-1;
             let status = JSON.parse(row.status)
+            let minTime = typeof row.min_time==='string'?Number(row.min_time):row.min_time
+            let minCount = typeof row.min_count==='string'?Number(row.min_count):row.min_count
             apiAlarmConfigSave({
-                id:row.id,
+                id:id,
                 userid:this.userId,
                 queueid:row.queueid,
-                min_time:row.min_time,
-                min_count:row.min_count,
+                min_time:minTime,
+                min_count:minCount,
                 status:status,
                 ding_token:row.ding_token
             }).then(res =>{
-                if(res.data.state==='error'){
-                    this.$message.error(res.data.msg)
+                if(!res.data.state){
+                    this.$message.error('添加失败')
                     return false
                 }
                 this.getAlarmList(1)
@@ -162,20 +165,26 @@ export default {
                 console.log(err)
             })
         },
-        // search(){
-        //     this.getAlarmList(1)
-        // },
+        // 选择队列ID
+        getQueueList(){
+            apiGetQueneList({
+                page_index:1,
+                page_size:20000,
+                user_id:this.userId
+            }).then(res =>{
+                this.queueList = res.data
+            })
+        },
         changePage(index){
             this.getAlarmList(index)
         },
         // 获取用户列表
-        getAlarmList(index){
+        getAlarmList (index){
             apiAlarmConfigList({
                 userid:this.userId,
                 pageindex:index,
                 pagesize:15,
             }).then(res =>{
-                console.log(res)
                 this.alarmList = res.data.data
                 this.pages = res.data.total
             }).catch(err =>{

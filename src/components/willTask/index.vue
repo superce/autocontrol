@@ -27,7 +27,7 @@
 </template>   
 
 <script>
-import {apiGetQueneList,apiCreateQuene,setQueueGroup,diffQueueGroup,removeQueueItem,apiGetWillDoTask,apiDeleteWillDoTask} from '@/request/api'
+import {apiCreateQuene,setQueueGroup,diffQueueGroup,removeQueueItem,apiGetWillDoTask,apiDeleteWillDoTask} from '@/request/api'
 import { dateFormat } from "@/utils/common";
 export default {
     data(){
