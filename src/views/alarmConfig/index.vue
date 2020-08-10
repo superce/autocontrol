@@ -185,10 +185,14 @@ export default {
                 pageindex:index,
                 pagesize:15,
             }).then(res =>{
-                this.alarmList = res.data.data
-                this.pages = res.data.total
+                if(res.data.state){
+                    this.alarmList = res.data.data
+                    this.pages = res.data.total
+                }else{
+                    this.$message.error(res.data.msg)
+                }
             }).catch(err =>{
-
+                this.$message.error('网络卡壳')
             })
         },
         // 格式化时间
