@@ -70,7 +70,6 @@
 <script>
 import {apiAlarmConfigList,apiAlarmConfigSave,apiGetQueneList} from '@/request/api'
 import {getLocal} from '@/utils/storage'
-import {dateFormat} from '@/utils/common'
 export default {
     name:'userMain',
     data(){
@@ -195,10 +194,6 @@ export default {
                 this.$message.error('网络卡壳')
             })
         },
-        // 格式化时间
-        dateFormat(date){
-            return dateFormat(date)
-        }
     },
 }
 </script>
