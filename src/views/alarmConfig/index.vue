@@ -158,7 +158,7 @@ export default {
                     this.$message.error('添加失败')
                     return false
                 }
-                this.getAlarmList(1)
+                this.getAlarmList(this.currentPage)
                 this.dialogFormVisible = false
                 this.$message.success('保存成功')
             }).catch(err =>{
