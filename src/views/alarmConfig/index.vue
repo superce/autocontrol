@@ -5,13 +5,13 @@
         </div>
         <div class="control-box">
             <el-table :data="alarmList" stripe :loading='loading'>
-                <el-table-column prop="ac.queueid" label="队列ID" width="100">
+                <el-table-column prop="q_name" label="队列名称" width="100">
                 </el-table-column>
-                <el-table-column prop="ac.user_id" label="用户ID" width="100">
+                <el-table-column prop="u_name" label="用户账号" width="100">
                 </el-table-column>
-                <el-table-column prop="ac.min_count" label="间隔时长(分钟)" width="120">
+                <el-table-column prop="ac.min_time" label="间隔时长(分钟)" width="120">
                 </el-table-column>
-                <el-table-column prop="ac.min_time" width="180" label="最小报警阈值"></el-table-column>
+                <el-table-column prop="ac.min_count" width="180" label="最小报警阈值"></el-table-column>
                 <el-table-column prop="ac.ding_token" label="钉钉token">
                 </el-table-column>
                 <el-table-column label="状态" width="100">
