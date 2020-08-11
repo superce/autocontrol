@@ -848,20 +848,6 @@ export default {
     },
     // 获取列表
     getList() {
-      // let start = this.startTime();
-      // let end = this.endTime();
-      // if (end < start) {
-      //   this.$message.error("开始时间不能大于结束时间");
-      //   return false;
-      // }
-      // if (end && !start) {
-      //   this.$message.error("请选择开始时间");
-      //   return false;
-      // }
-      // if (start && !end) {
-      //   this.$message.error("请选择结束时间");
-      //   return false;
-      // }
       this.getControlList('', '', this.currentPage);
     },
     // 获取列表api

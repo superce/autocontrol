@@ -22,12 +22,6 @@ const routes = [
     component:() => import('@/views/centralControl/index.vue')
   },
   {
-    path:'/user_main',
-    name:'userMain',
-    meta:{title:'用户维护'},
-    component:() => import('@/views/userMain/index.vue')
-  },
-  {
     path:'/task_quene',
     name:'taskQuene',
     meta:{title:'队列标识管理'},
@@ -58,15 +52,9 @@ const routes = [
     component: () => import('@/views/taskConfig/index.vue') 
   },
   {
-    path: '/alarm_config',
-    name: 'alarmConfig',
-    meta: {title: '报警配置'},
-    component: () => import('@/views/alarmConfig/index.vue') 
-  },
-  {
     path: '/system_config',
     name: 'systemConfig',
-    meta: { title: '系统配置' },
+    meta: { title: '任务命令' },
     component: () => import('@/views/system/index.vue'),
     redirect: '/system_config/admin',
     children:[
@@ -81,6 +69,33 @@ const routes = [
         component: () => import('@/views/system/task.vue')
       }
     ]
+  },
+  {
+    path: '/config_manage',
+    name: 'configManage',
+    meta: { title: '配置管理' },
+    component: () => import('@/views/alarmConfig/index.vue'),
+    redirect: '/config_manage/user_main',
+    children:[
+      {
+        path:'user_main',
+        name:'userMain',
+        meta:{title:'用户管理'},
+        component: () => import('@/views/alarmConfig/userMain.vue'),
+      },
+      {
+        path: 'alarm_config',
+        name: 'alarmConfig',
+        meta: {title: '报警配置'},
+        component: () => import('@/views/alarmConfig/alarmConfig.vue') 
+      }
+    ]
+  },
+  {
+    path:'/report',
+    name:"Report",
+    meta:{title:"统计报表"},
+    component:()=>import('@/views/report/index.vue')
   },
   {
     path:'*',

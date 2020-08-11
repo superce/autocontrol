@@ -112,3 +112,5 @@ export const apiAlarmConfigList = p =>post('/alarm/config/list',p)
 
 // 报警配置保存
 export const apiAlarmConfigSave = p =>post('/api/alarmconfig/save',p)
+
+export const apiAlarmStaList = p =>post('/alarm/stat',p)

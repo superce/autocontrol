@@ -242,5 +242,5 @@ export default {
   .admin.central-control{margin: 60px auto 0}
   .admin .fiexd-nav{left: 100px!important;}
   .admin .addAdmin .btn{margin-top: 64px}
-  .pages{text-align: center;margin-top: 10px;}
+ 
 </style>
