@@ -94,7 +94,7 @@ const routes = [
   {
     path:'/report',
     name:"Report",
-    meta:{title:"统计报表"},
+    meta:{title:"报警统计"},
     component:()=>import('@/views/report/index.vue')
   },
   {

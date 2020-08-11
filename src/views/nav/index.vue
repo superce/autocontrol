@@ -12,7 +12,7 @@
             <!-- <el-menu-item @click="userMain" router index="/user_main" v-if="isSuper===1&&isSuper">用户管理</el-menu-item>
             <el-menu-item  @click="alarmConfig" router index="/alarm_config">报警配置</el-menu-item> -->
             <el-menu-item @click="systemConfig" router index="/system_config" v-if="isSuper===1&&isSuper">任务命令</el-menu-item>
-            <el-menu-item @click="report" router index="/report">统计报表</el-menu-item>
+            <el-menu-item @click="report" router index="/report">报警统计</el-menu-item>
           </el-menu>
           <div class="line"></div>
         </div>
