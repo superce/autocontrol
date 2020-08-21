@@ -114,3 +114,6 @@ export const apiAlarmConfigList = p =>post('/alarm/config/list',p)
 export const apiAlarmConfigSave = p =>post('/api/alarmconfig/save',p)
 
 export const apiAlarmStaList = p =>post('/alarm/stat',p)
+
+// 任务队列总数量
+export const apiGetQueneAllCount = p => get('/api/get_queue_all_task',p)

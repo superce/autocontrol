@@ -30,13 +30,14 @@
                             <el-table-column type="selection" width="55" v-model="item.isSelect"></el-table-column>
                             <el-table-column prop="id" label="队列ID" width="70"></el-table-column>
                             <el-table-column prop="title" label="队列标识" width="180"></el-table-column>
-                            <el-table-column prop="username" label="用户" width="180"></el-table-column>
+                            <el-table-column prop="username" label="用户" width="100"></el-table-column>
                             <el-table-column prop="remark" label="备注" width="200"></el-table-column>
-                            <el-table-column label="创建时间" prop="addtime">
+                            <el-table-column label="创建时间" prop="addtime" width="200">
                                 <template slot-scope='{row}'>
                                     {{dateFormats(row.addtime)}}
                                 </template>
                             </el-table-column>
+                            <el-table-column prop="queueCount" label="积压任务数量"></el-table-column>
                             <el-table-column label="操作" prop="addtime">
                                 <template slot-scope="{row}">
                                     <el-button type="primary" size="mini" @click="editQueue(row)">修改</el-button>
@@ -48,9 +49,18 @@
                         </el-table>
                     </el-collapse-item>
                 </el-collapse>
-                <ul class="pages" v-if="pages>1">
-                    <li v-for="(page,index) in pages" :key="index+'page'" @click="goPage(page)">{{page}}</li>
-                </ul>
+                <!-- 分页 -->
+                <div class="pages">
+                    <el-pagination
+                        background
+                        layout="prev, pager, next"
+                        :current-page.sync='currentPage'
+                        @current-change='nextpage(currentPage)'
+                        :page-count="pages"
+                        hide-on-single-page
+                        >
+                    </el-pagination>
+                </div>
             </div>
         </div>
         <!-- 创建分组弹窗 -->
@@ -88,7 +98,7 @@
     </div>
 </template>
 <script>
-import {apiGetQueneList,apiCreateQuene,setQueueGroup,diffQueueGroup,removeQueueItem,apiGetWillDoTask,apiDeleteWillDoTask} from '@/request/api'
+import {apiGetQueneList,apiCreateQuene,setQueueGroup,diffQueueGroup,removeQueueItem,apiGetWillDoTask,apiDeleteWillDoTask,apiGetQueneAllCount} from '@/request/api'
 import { dateFormat } from "@/utils/common";
 import disControl from '@/components/disControl'
 import willTask from '@/components/willTask'
@@ -127,7 +137,8 @@ export default {
             activeNames:[],
             pages:0, //页数
             queueid:0,
-            tagId:0
+            tagId:0,
+            currentPage:1
         }
     },
     computed:{
@@ -241,8 +252,9 @@ export default {
                 this.loading=false
             })
         },
-        goPage(p){
-            this.getQueneList('','',p)
+        // 翻页
+        nextpage(i){
+            this.getQueneList('','',i)
         },
         // 搜索
         search(){
@@ -344,12 +356,29 @@ export default {
                             }
                         })
                     }
+                    this.GetQueneAllCount()
                     this.pages = res.total
                 }
             }).catch(err =>{
                 console.log(err)
             }).finally(()=>{
                 loading.close()
+            })
+        },
+        // 获取当前队列下所有的任务队列数量
+        GetQueneAllCount(){
+            this.queneList.forEach(list =>{
+                list.children.forEach(item => {
+                    apiGetQueneAllCount({queueid:item.id}).then(res =>{
+                        if(res.state){
+                            item.queueCount = res.count
+                        }else{
+                            this.$message.error(res.msg)
+                        }
+                    }).catch(err =>{
+        
+                    })
+                });
             })
         },
         getWillTask(id){
