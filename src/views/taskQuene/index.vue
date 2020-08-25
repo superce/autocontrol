@@ -37,7 +37,11 @@
                                     {{dateFormats(row.addtime)}}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="queueCount" label="积压任务数量"></el-table-column>
+                            <el-table-column prop="queueCount" label="积压任务数量">
+                                <template slot-scope="{row}">
+                                    <el-button type="text" @click="{{getQueneCount(row)}}">{{row.count}}</el-button>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="操作" prop="addtime">
                                 <template slot-scope="{row}">
                                     <el-button type="primary" size="mini" @click="editQueue(row)">修改</el-button>
@@ -138,7 +142,7 @@ export default {
             pages:0, //页数
             queueid:0,
             tagId:0,
-            currentPage:1
+            currentPage:1,
         }
     },
     computed:{
@@ -293,6 +297,7 @@ export default {
                     let index = 0
                     if(this.isSuper == 0){  //普通用户
                         res.data.forEach(items =>{
+                            items.count = '查看'
                             let item = this.queneList.find(p =>{
                                 return p.queue_type_id === items.queue_type_id
                             })
@@ -325,6 +330,7 @@ export default {
                         })
                     }else{ //超级管理员
                         res.data.forEach(items =>{
+                            items.count = '查看'
                             let item = this.queneList.find(p =>{
                                 return p.queue_type_id === items.user_id
                             })
@@ -356,7 +362,6 @@ export default {
                             }
                         })
                     }
-                    this.GetQueneAllCount()
                     this.pages = res.total
                 }
             }).catch(err =>{
@@ -366,19 +371,21 @@ export default {
             })
         },
         // 获取当前队列下所有的任务队列数量
-        GetQueneAllCount(){
-            this.queneList.forEach(list =>{
-                list.children.forEach(item => {
-                    apiGetQueneAllCount({queueid:item.id}).then(res =>{
-                        if(res.state){
-                            item.queueCount = res.count
-                        }else{
-                            this.$message.error(res.msg)
-                        }
-                    }).catch(err =>{
-        
+        getQueneCount(row){
+            apiGetQueneAllCount({queueid:row.id}).then(res =>{
+                if(res.state){
+                    this.queneList.forEach(list =>{
+                        list.children.forEach(item =>{
+                            if(item.id === row.id){
+                                item.count = res.count
+                            }
+                        })
                     })
-                });
+                }else{
+                    this.$message.error(res.msg)
+                }
+            }).catch(err =>{
+
             })
         },
         getWillTask(id){
