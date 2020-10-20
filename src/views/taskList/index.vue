@@ -40,6 +40,14 @@
                 </el-select>
             </div>
             <div>
+                <span>accountid:</span>
+                <el-input v-model="accountid" placeholder="请输入内容"></el-input>
+            </div>
+            <div>
+                <span>taskid:</span>
+                <el-input v-model="taskid" placeholder="请输入内容"></el-input>
+            </div>
+            <div>
                 <span>每页显示条数:</span>
                 <el-select v-model="pagenum" placeholder="请选择" @change='search("pagenum")'>
                     <el-option value="15"></el-option>
@@ -59,14 +67,15 @@
             </div>
             <div>
                 <el-button type="primary" @click="renovate">刷新</el-button>
+                <el-button type="primary" @click="search('')">搜索</el-button>
             </div>
             <!-- <el-button type="primary" @click="search">搜索</el-button> -->
         </div>
         <div class="control-box">
             <div class="el-row">
                 <el-table :data="taskList" stripe style="width: 100%" v-loading='loading'>
-                    <el-table-column prop="taskID" label="任务id" width='400'></el-table-column>
-                    <el-table-column prop="name" label="任务名称"></el-table-column>
+                    <el-table-column prop="taskID" label="任务id" width='320'></el-table-column>
+                    <el-table-column prop="name" label="任务名称" width="200"></el-table-column>
                     <!-- <el-table-column prop="pageurl" label="页面地址"></el-table-column> -->
                     <el-table-column prop="state" label="状态" width="100">
                         <template slot-scope="{row}">
@@ -76,34 +85,34 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="jsLink" label="JavaScript"></el-table-column>
-                    <el-table-column prop="machineID" label="中控" width="200">
+                    <el-table-column prop="machineID" label="中控" width="240">
                         <template slot-scope="{row}">
-                            {{row.controlName}}<span v-if="row.remark&&isSuper===1">({{row.remark}})</span>
+                            {{row.controlName}}<span>({{row.remark}})</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="tagName" label="队列标签">
+                    <el-table-column prop="tagName" label="队列标签" width="170">
                         <template slot-scope="{row}">
                             <!-- {{contrastQunen()}} -->
                             {{filterTag(row.tag)}}
                         </template>
                     </el-table-column>
                     <el-table-column prop="timeout" label="超时时间(s)" width="150"></el-table-column>
-                    <el-table-column prop="addDate" label="添加时间" width="180">
+                    <el-table-column prop="addDate" label="添加时间" width="160">
                         <template slot-scope="{row}">
                             {{dateFormats(row.addDate)}}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="pubDate" label="执行时间" width="180">
+                    <el-table-column prop="pubDate" label="执行时间" width="160">
                         <template slot-scope="{row}">
                             {{dateFormats(row.runDate)}}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="pubDate" label="完成时间" width="180">
+                    <el-table-column prop="pubDate" label="完成时间" width="160">
                         <template slot-scope="{row}">
                             {{dateFormats(row.complateDate)}}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="" label="操作" width="180">
+                    <el-table-column prop="" label="操作">
                         <template slot-scope="{row}">
                             <el-button :type="row.state==0?'info':'primary'" @click="editTask(row)">重置</el-button>
                         </template>
@@ -156,7 +165,9 @@ export default {
             tagList:[], //标签列表
             pagenum:'15',
             remarkList:[], // 备注列表
-            SortDate:'AddDate' //排序方式
+            SortDate:'AddDate', //排序方式
+            taskid:'',
+            accountid:''
         }
     },
     created(){
@@ -209,7 +220,9 @@ export default {
                 queueid:id,
                 state:this.searchState,
                 tag:tag,
-                sort:this.SortDate
+                sort:this.SortDate,
+                accountid:this.accountid,
+                taskid:this.taskid
             }).then(res =>{
                 this.total = res.pagecount
                 this.getTagList(id)

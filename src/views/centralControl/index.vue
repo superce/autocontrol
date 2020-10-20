@@ -223,7 +223,7 @@
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column prop="name" label="中控名称">
                     <template slot-scope="{row}">
-                      {{row.name}}<span v-if="row.remark&&isSuper === 1" class="remark">({{row.remark}})</span>
+                      {{row.name}}<span class="remark">({{row.remark}})</span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="tag_name" label="队列标识">
