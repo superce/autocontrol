@@ -51,13 +51,15 @@ export default {
             const data = [];
             for (let i = 1; i <= this.controlList.length; i++) {
                 let ip = '***'
+                let labelName = this.controlList[i-1].name;
                 if(this.controlList[i-1].ip){
                     ip = this.controlList[i-1].ip
+                    labelName = `${this.controlList[i-1].name}(${this.controlList[i-1].ip})`
                 }
                 let item = {
                     ip:ip,
                     key: this.controlList[i-1].id,
-                    label: this.controlList[i-1].name,
+                    label: labelName,
                     remark:''
                 }
                 if(this.isSuper==1){

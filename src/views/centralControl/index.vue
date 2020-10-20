@@ -221,28 +221,28 @@
               </template>
               <el-table ref="multipleTable" :data="items.itemList" stripe style="width: 100%" @selection-change="handleSelectionChange">
                   <el-table-column type="selection" width="55"></el-table-column>
-                  <el-table-column prop="name" label="中控名称">
+                  <el-table-column prop="name" label="中控名称" width="220">
                     <template slot-scope="{row}">
                       {{row.name}}<span class="remark">({{row.remark}})</span>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="tag_name" label="队列标识">
+                  <el-table-column prop="tag_name" label="队列标识" width="200">
                     <template slot-scope="{row}">
                       {{row.tag_name}}<i v-if="row.tag_name"> / </i>{{row.queue_title}}
                     </template>
                   </el-table-column>
-                  <el-table-column prop='w_count' label="窗口数量" width="180"></el-table-column>
-                  <el-table-column prop='use_time' label="使用率" width="180">
+                  <el-table-column prop='w_count' label="窗口数量" width="100"></el-table-column>
+                  <el-table-column prop='use_time' label="使用率" width="100">
                     <template slot-scope="{row}">
                       {{userTime(row)}}
                     </template>
                   </el-table-column>
-                  <el-table-column v-if="isSuper == 1" prop="remark" label="版本号" width="180">
+                  <el-table-column v-if="isSuper == 1" prop="remark" label="版本号" width="150">
                     <template slot-scope="{row}">
                       {{row.version||'--'}}
                     </template>
                   </el-table-column>
-                  <el-table-column label="网络状态" width="180">
+                  <el-table-column label="网络状态" width="100">
                     <template slot-scope="{row}">
                       <el-tag v-if="isSecondsFormat(row)" :type="row.net_state==0?'success':'danger'" size='small'>
                         网络{{row.net_state | netState}}
@@ -250,7 +250,7 @@
                       <el-tag v-else type='info' size="small">网络--</el-tag>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中控状态" width="180">
+                  <el-table-column label="中控状态" width="100">
                     <template slot-scope="{row}">
                       <el-tag :type="row.status==0?'success':'danger'" size='small'>
                         {{row.status|controlStatus}}

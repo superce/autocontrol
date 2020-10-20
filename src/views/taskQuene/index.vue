@@ -37,7 +37,7 @@
                                     {{dateFormats(row.addtime)}}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="queueCount" label="积压任务数量">
+                            <el-table-column prop="queueCount" label="积压任务数量" width="150">
                                 <template slot-scope="{row}">
                                     <el-button type="text" @click="{{getQueneCount(row)}}">{{row.count}}</el-button>
                                 </template>
