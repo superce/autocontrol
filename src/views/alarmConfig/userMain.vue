@@ -10,20 +10,20 @@
         </div>
         <div class="control-box">
             <el-table :data="userList" stripe :loading='loading'>
-                <el-table-column prop="name" label="账号" width="180">
+                <el-table-column prop="name" label="账号" width="100">
                 </el-table-column>
-                <el-table-column prop="pwd" label="密码" width="180">
+                <el-table-column prop="pwd" label="密码" width="100">
                 </el-table-column>
-                <el-table-column prop="remark" label="备注">
+                <el-table-column prop="remark" label="备注" width="220">
                 </el-table-column>
-                <el-table-column width="180" label="等级">
+                <el-table-column width="150" label="等级">
                     <template slot-scope="{row}">
                         {{row | grades}}
                     </template>
                 </el-table-column>
-                <el-table-column width="350" prop="token" label="token">
+                <el-table-column width="300" prop="token" label="token">
                 </el-table-column>
-                <el-table-column prop="addtime" label="添加时间">
+                <el-table-column prop="addtime" label="添加时间" width="200">
                     <template slot-scope="{row}">
                         {{dateFormat(row.addtime)}}
                     </template>

@@ -32,22 +32,22 @@
     <!-- 列表 -->
     <div class="el-row task-el-row">
       <el-table :data="taskList" stripe style="width: 100%" v-loading='loading'>
-          <el-table-column prop="server_name" label="中控名称">
+          <el-table-column prop="server_name" label="中控名称" width="150">
           </el-table-column>
-          <el-table-column prop="cmd_name" label="命令名称"></el-table-column>
-          <el-table-column prop="statusname" label="状态">
+          <el-table-column prop="cmd_name" label="命令名称" width="180"></el-table-column>
+          <el-table-column prop="statusname" label="状态" width="100">
             <template slot-scope="{row}">
               <el-tag :type="row.status==2?'success':'danger'" size='small'>
                   {{row.statusname}}
               </el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="addtime" label="添加时间">
+          <el-table-column prop="addtime" label="添加时间" width="200">
             <template slot-scope="{row}">
                 {{dateFormats(row.addtime)}}  
             </template>
           </el-table-column>
-          <el-table-column prop="" label="执行时间" width="180">
+          <el-table-column prop="" label="执行时间">
               <template slot-scope="{row}">
                   {{dateFormats(row.acctime)}} 
               </template>

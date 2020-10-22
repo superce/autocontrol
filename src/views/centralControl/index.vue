@@ -52,14 +52,6 @@
             ></el-option>
           </el-select>
         </div>
-        <!-- <div class="block">
-          <span class="demonstration">开始时间</span>
-          <el-date-picker v-model="params.start_date" type="date" placeholder="选择日期"></el-date-picker>
-        </div>
-        <div class="block">
-          <span class="demonstration">结束时间</span>
-          <el-date-picker v-model="params.end_date" type="date" placeholder="选择日期"></el-date-picker>
-        </div> -->
         <el-button type="primary" @click="search">搜索</el-button>
       </div>
       <div class="margin">
@@ -112,6 +104,12 @@
             <el-form-item v-if="isSuper===1" label="备注" class="input-item">
               <el-input v-model="remark"></el-input>
             </el-form-item>
+             <el-form-item label="本机代理IP" class="input-item">
+              <el-input v-model="proxyIp"></el-input>
+            </el-form-item>
+            <el-form-item label="本机代理端口" class="input-item">
+              <el-input v-model="proxyPort"></el-input>
+            </el-form-item>
             <el-form-item label="4G网络设置">
               <el-select v-model="site4g.mode" placeholder="请选择" @change="changeModle">
                 <el-option label="不换IP" value="-1"></el-option>
@@ -132,6 +130,12 @@
                   <el-option value="3" label="香港数码通（smartone）"></el-option>
                   <el-option value="4" label="香港3hk"></el-option>
                   <el-option value="5" label="台湾远传"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="4G拨号模式" prop="con_type">
+                <el-select v-model="site4g.con_mode" placeholder="选择拨号模式">
+                  <el-option value="0" label="旧"></el-option>
+                  <el-option value="1" label="新"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="连接类型" v-if="isSuper===1" prop="con_type">
@@ -223,7 +227,7 @@
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column prop="name" label="中控名称" width="220">
                     <template slot-scope="{row}">
-                      {{row.name}}<span class="remark">({{row.remark}})</span>
+                      {{row.name}}<span v-if="row.remark" class="remark">({{row.remark}})</span>
                     </template>
                   </el-table-column>
                   <el-table-column prop="tag_name" label="队列标识" width="200">
@@ -327,6 +331,9 @@ export default {
         ],
         mode:[
           { required: true, message: '请选择连模式', trigger: 'blur' },
+        ],
+        con_mode:[
+          { required: true, message: '请选拨号模式', trigger: 'blur' },
         ]
       },
       dialogEdit:false, //编辑弹窗
@@ -360,7 +367,8 @@ export default {
         password: "",
         interval: "",
         mode: "",
-        iptype:'9'
+        iptype:'9',
+        con_mode:'0'
       },
       editModle: "", // 选择模式
       con_typeId: "",
@@ -395,6 +403,8 @@ export default {
       isTestRadio:'0', // 是否是测试机 1:测试机
       displayMode:'1', // 页面显示形式
       activeNames:[], // 列表折叠
+      proxyIp:'',//本机代理ip
+      proxyPort:'',//本机代理端口
       userNameList:[{id:0,name:'全部'}], // 中控用户分类列表
     };
   },
@@ -644,29 +654,35 @@ export default {
           this.list.forEach(items =>{
             items.itemList.forEach(item =>{
               if(this.editIds[0]===item.id){
+                console.log(111)
                 this.remark=item.remark
                 this.isEditName = item.name
                 this.isSelectStatus = item.status
                 this.wCount = item.w_count
                 this.isTestRadio = item.istest.toString()
+                this.proxyIp = item.local_proxy_IP
+                this.proxyPort = item.local_proxy_port
               }
             })
           })
           // 换ip
           if(copySite4g.length>0&&copySite4g[0]){
             let copySite4g_1 = JSON.parse(copySite4g[0])
-              copySite4g_1.mode = copySite4g_1.mode.toString()
-              copySite4g_1.con_type = copySite4g_1.con_type.toString()
-              copySite4g_1.interval = copySite4g_1.interval.toString()
-              copySite4g_1.iptype = copySite4g_1.iptype.toString()
-              this.site4g = {
-                con_type: copySite4g_1.con_type,
-                username: copySite4g_1.username,
-                password: copySite4g_1.password,
-                interval: copySite4g_1.interval,
-                mode: copySite4g_1.mode,
-                iptype:copySite4g_1.iptype
-              }
+            copySite4g_1.mode = copySite4g_1.mode.toString()
+            copySite4g_1.con_type = copySite4g_1.con_type.toString()
+            copySite4g_1.interval = copySite4g_1.interval.toString()
+            copySite4g_1.iptype = copySite4g_1.iptype.toString()
+            let conMode = copySite4g_1.con_mode>=0&&copySite4g_1.con_mode?copySite4g_1.con_mode:0
+            conMode = conMode.toString()
+            this.site4g = {
+              con_type: copySite4g_1.con_type,
+              username: copySite4g_1.username,
+              password: copySite4g_1.password,
+              interval: copySite4g_1.interval,
+              mode: copySite4g_1.mode,
+              iptype:copySite4g_1.iptype,
+              con_mode:conMode
+            }
             if(g4Index){
               console.log('不换IP',g4Index) //g4Index 为true  不换ip
               this.site4g.mode='-1'
@@ -693,7 +709,8 @@ export default {
                   password: a.password,
                   interval: a.interval,
                   mode: a.mode,
-                  iptype:a.iptype
+                  iptype:a.iptype,
+                  con_mode:'0'
                 }
                 break;
               }
@@ -768,6 +785,7 @@ export default {
         interval: Number(site4g.interval),
         mode: Number(site4g.mode),
         iptype:Number(site4g.iptype),
+        con_mode:Number(site4g.con_mode)
       }
       let json4g = JSON.stringify(site4gNumber);
       params.json4g=json4g
@@ -803,7 +821,9 @@ export default {
         w_count:p.w_count,
         status:p.status,
         remark:this.remark,
-        istest:istest
+        istest:istest,
+        local_proxy_IP:this.proxyIp,
+        local_proxy_port:this.proxyPort
       }).then(res => {
         if(res.data.state === 'error'){
           this.$message.error(res.data.msg)

@@ -41,16 +41,16 @@
     <!-- 列表 -->
     <div class="el-row">
       <el-table :data="adminList" stripe style="width: 100%" v-loading='loading'>
-          <el-table-column prop="name" label="命令名称">
+          <el-table-column prop="name" label="命令名称" width="200">
           </el-table-column>
-          <el-table-column prop="cmd_text" label="命令内容"></el-table-column>
-          <el-table-column prop="remark" label="命令说明"></el-table-column>
-          <el-table-column prop="addtime" label="时间">
+          <el-table-column prop="cmd_text" label="命令内容" width="350"></el-table-column>
+          <el-table-column prop="remark" label="命令说明" width="230"></el-table-column>
+          <el-table-column prop="addtime" label="时间" width="200">
             <template slot-scope="{row}">
                 {{dateFormats(row.addtime)}}  
             </template>
           </el-table-column>
-          <el-table-column prop="" label="操作" width="180">
+          <el-table-column prop="" label="操作">
               <template slot-scope="{row}">
                   <el-button type="primary" size="mini" @click="editAdmin(row)">编辑</el-button>
                   <el-button type="primary" size="mini" @click="deleteAdmin(row)">删除</el-button>

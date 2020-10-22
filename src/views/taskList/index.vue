@@ -84,10 +84,10 @@
                             </el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="jsLink" label="JavaScript"></el-table-column>
-                    <el-table-column prop="machineID" label="中控" width="240">
+                    <el-table-column prop="jsLink" label="JavaScript" width="260"></el-table-column>
+                    <el-table-column prop="machineID" label="中控" width="200">
                         <template slot-scope="{row}">
-                            {{row.controlName}}<span>({{row.remark}})</span>
+                            {{row.controlName}}<span v-if="row.remark">({{row.remark}})</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="tagName" label="队列标签" width="170">
