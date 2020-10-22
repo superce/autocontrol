@@ -1059,6 +1059,8 @@ export default {
         this.isSelectStatus = ''
         this.wCount=''
         this.isShow4G=false
+        this.proxyIp = ''
+        this.proxyPort = '';
         this.site4g = {
           con_type: "",
           username: "",
